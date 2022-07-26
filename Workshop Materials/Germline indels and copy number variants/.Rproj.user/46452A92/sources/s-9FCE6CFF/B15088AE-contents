@@ -1,0 +1,145 @@
+---
+title: "GPX2 and Differentiation Analysis"
+author: "Lochlan Fennell"
+date: "31/05/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(warning = FALSE, message = FALSE) 
+library(data.table)
+library(tidyverse)
+library(ggpubr)
+library(compareGroups)
+library(DT)
+library(plotly)
+#BiocManager::install("maftools")
+library(maftools)
+```
+
+## Data wrangling
+
+Differentiation and MSI data from Mariadason lab, signatures from CCLE publication supplmentary (Ghandi et al 2019 Nature). Data imported and combined by cell line. Signatures are from COSMIC V2 (30 SBS signatures). Note: not all of these identifiers correspond with COSMIC v3.2 (ie. SBSX in COSMIC2 might not be SBSX in COSMIC3.2) 
+
+Code
+```{r data wrangling}
+CCLE_Signatures <- fread("CCLE_Signature.csv")
+Differentation_State <- fread("Differentiation_JM.csv", header = TRUE)
+exp <- fread("./CCLE_expression.csv") %>% select(`GPX2 (2877)`,V1)
+Sig_Diff <- inner_join(Differentation_State, y=CCLE_Signatures, by = c("Cell_Line" = "CCLE")) %>% inner_join(y=exp, by = c("depMapID" = "V1"))
+
+
+```
+
+## Signature Plots
+Plotting signatures by microsatellite instablity, faceted for differentiation status.
+
+## MSI
+Code
+```{r plotsMSI, fig.height=20, fig.width=10}
+facet(ggboxplot(data = melt(dplyr::filter(Sig_Diff, MSI_MSS == "MSI" & Grade != "WD"), id.vars = c(1:9), measure.vars = 10:40), x = "Grade", y = "value", add = "dotplot") + stat_compare_means(label.x.npc = "centre", vjust = 3), facet.by = "variable", scales = "free_y", ncol = 2)
+```
+
+## MSI Scatterplots
+GPX2 expression vs SBS signatures
+
+```{r, fig.height=20, fig.width=10}
+facet(ggscatter(data = melt(dplyr::filter(Sig_Diff, MSI_MSS == "MSI"), id.vars = c(1:9, 40), measure.vars = 10:39), x = "GPX2 (2877)", y = "value", add = "reg.line", shape = "Grade", cor.coef = TRUE, cor.method = "spearman"),  facet.by = "variable", scales = "free_y", ncol=2)
+```
+
+## MSS
+Code
+```{r plotsMSS, fig.height=20, fig.width=10}
+facet(ggboxplot(data = melt(dplyr::filter(Sig_Diff, MSI_MSS == "MSS" & Grade != "WD"), id.vars = c(1:9), measure.vars = 10:40), x = "Grade", y = "value", add = "dotplot") + stat_compare_means(label.x.npc = "centre", vjust = 3) , facet.by = "variable", scales = "free_y", ncol=2)
+
+```
+
+## MSS scatterplots
+GPX2 expression vs SBS signatures
+
+```{r, fig.height=20, fig.width=10}
+facet(ggscatter(data = melt(dplyr::filter(Sig_Diff, MSI_MSS == "MSS"), id.vars = c(1:9, 40), measure.vars = 10:39), x = "GPX2 (2877)", y = "value", add = "reg.line", shape = "Grade", cor.coef = TRUE, cor.method = "spearman"), facet.by = "variable", scales = "free_y", ncol=2)
+```
+## GPX2 vs Grade
+Group by MSI and then all cell lines
+
+```{r}
+ggboxplot(Sig_Diff, x="Grade", y="GPX2 (2877)", facet.by = "MSI_MSS")
+ggboxplot(Sig_Diff, x="Grade", y="GPX2 (2877)")
+```
+
+## Scatterplots with both MSI and MSS together
+
+```{r, fig.height=20, fig.width=10}
+facet(ggscatter(data = melt(Sig_Diff, id.vars = c(1:9, 40), measure.vars = 10:39), x = "GPX2 (2877)", y = "value", add = "reg.line", shape = "Grade", cor.coef = TRUE, cor.method = "spearman"), facet.by = "variable", scales = "free_y", ncol=2) 
+```
+
+## Transitions and Transversions
+```{r}
+CCLE_Maf <- fread("CCLE_mutations.csv") %>% 
+  rename(Tumor_Seq_Allele2 = Alternate_Allele) %>%
+  rename(Tumor_Sample_Barcode = DepMap_ID) %>% read.maf()
+CCLE_titv = titv(maf = CCLE_Maf, plot = FALSE, useSyn = TRUE)
+
+inner_join(Sig_Diff, CCLE_titv$fraction.contribution, by = c("depMapID" = "Tumor_Sample_Barcode")) %>% 
+  inner_join(CCLE_titv$TiTv.fractions, by = c("depMapID" = "Tumor_Sample_Barcode")) %>%
+  melt(id.vars = 1:3, measure.vars = 41:48) %>% 
+  ggplot(aes(Grade, value)) +
+    geom_boxplot() +
+    ylab("% of mutations") +
+    facet_grid(rows = vars(MSI_MSS), cols = vars(variable))
+
+inner_join(Sig_Diff, CCLE_titv$fraction.contribution, by = c("depMapID" = "Tumor_Sample_Barcode")) %>% 
+  inner_join(CCLE_titv$TiTv.fractions, by = c("depMapID" = "Tumor_Sample_Barcode")) %>%
+  melt(id.vars = c(1:3, 40), measure.vars = 41:48) %>%
+  ggplot(aes(`GPX2 (2877)`, value)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme(axis.text.x = element_text(angle=45)) +
+    ylab("% of mutations") +
+    facet_grid(rows = vars(MSI_MSS), cols = vars(variable))
+
+inner_join(Sig_Diff, CCLE_titv$fraction.contribution, by = c("depMapID" = "Tumor_Sample_Barcode")) %>% 
+  inner_join(CCLE_titv$TiTv.fractions, by = c("depMapID" = "Tumor_Sample_Barcode")) %>%
+  melt(id.vars = c(1:3, 40), measure.vars = 41:48) %>%
+  ggplot(aes(`GPX2 (2877)`, value)) +
+    geom_point() +
+    geom_smooth(method = "lm") +
+    theme(axis.text.x = element_text(angle=45)) +
+    ylab("% of mutations") +
+    facet_grid(rows = vars(Grade), cols = vars(variable))
+
+```
+
+## Table with signatures
+```{r}
+additionalGenes <- fread("./CCLE_expression.csv") %>% select(V1,
+  `GPX7 (2882)`,
+  `GPX8 (493869)`,
+  `GPX4 (2879)`,
+  `GPX6 (257202)`,
+  `GPX3 (2878)`,
+  `GPX5 (2880)`,
+  `GPX1 (2876)`,
+  `TXNRD1 (7296)`,
+  `TXN (7295)`,
+  `TXN2 (25828)`)
+
+  inner_join(x=Sig_Diff, y=additionalGenes, by = c("depMapID" = "V1")) %>%
+    inner_join(CCLE_titv$fraction.contribution, by = c("depMapID" = "Tumor_Sample_Barcode")) %>% 
+  inner_join(CCLE_titv$TiTv.fractions, by = c("depMapID" = "Tumor_Sample_Barcode")) %>%
+datatable(extensions = 'Buttons',
+            options = list(dom = 'Blfrtip',
+                           buttons = c('copy', 'csv', 'excel', 'pdf', 'print'),
+                           lengthMenu = list(c(10,25,50,-1),
+                                             c(10,25,50,"All"))))
+```
+
+## SessionInfo
+For reproducibility
+```{r sessioninfo}
+sessionInfo()
+```
+
+
