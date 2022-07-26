@@ -376,6 +376,16 @@ We can see that the Pr(>F) and Pr(>|T|) for the ANOVA and regression, which corr
 
 :::
 
+::: exercisebox
+**Exercise 8:** Perform a linear regression on the data used to generate the first plot in exercise 7 and an ANOVA on the data used to generate the second plot in the same exercise. Remember you will need to use both the relevent statistical function (see above), and the summary function. Comment on what the output means. 
+
+```{r, R-Ex8, eval=TRUE, echo=FALSE}
+summary(lm(IPO8 ~ KRAS, expressionsubtype_mrna_dat))
+summary(aov(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat))
+```
+:::
+
+
 ------------------------------------------------------------------------
 
 ## Part 3 - Bash
