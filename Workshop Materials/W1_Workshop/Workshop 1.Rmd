@@ -384,7 +384,7 @@ summary(lm(IPO8 ~ KRAS, expressionsubtype_mrna_dat))
 summary(aov(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat))
 ```
 :::
-
+ccc
 
 ------------------------------------------------------------------------
 
