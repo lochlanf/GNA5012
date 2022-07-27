@@ -441,3 +441,40 @@ touch my_first_directory/file1.txt my_first_directory/file2.txt
 
 ```
 :::
+
+::: exercisebox
+**Exercise 2**
+
+- Make a directory called workshop_1
+- Use the cd command to navigate to workshop_1
+- Create a directory called data, scripts and results
+- Within the scripts subdirectory, create an empty file called for_loop.sh for use later in the workshop
+
+```{bash, bash-ex2, eval = FALSE, echo = FALSE}
+mkdir workshop_1
+cd workshop_1
+mkdir data
+mkdir scripts
+mkdir results
+touch scripts/for_loop.sh
+```
+:::
+
+There are occasions where will want to remove files and directories. We use the `rm` command to remove files and the `rmdir` command to remove directories. **IMPORTANT: In linux there is no recycle bin! If you execute an rm command to remove a file this is not usually reversible, so you must use caution when removing files**. 
+
+::: examplebox
+**Example**
+
+Here, I create a directory called temp and a file called temp.txt. I then use rmdir and rm to remove these files. As alluded to above, these commands are irrevocable.
+
+```{bash, eval = FALSE}
+mkdir temp
+touch temp.txt
+rmdir temp
+rm temp.txt
+```
+:::
+
+------------------------------------------------------------------------
+
+Another important feature of linux is the ability to create links to files. These links are called symbolic links, and they act like shortcuts. These are very useful in bioinformatics. We might use a symbolic link to point to a directory containing reference files that might be buried deep in the file system. We create symbolic links use the `ln` command
