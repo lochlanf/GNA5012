@@ -484,8 +484,8 @@ demonstrator if you are struggling with any exercise.</p>
 <p>RStudio allows users to create R projects, each of which will have
 their own working directory, environment and history. Let’s start by
 making an R project for this workshop in a new directory and creating an
-RMarkdown document. This video will walk you through the process.</p>
-<p>INSERT VIDEO HERE</p>
+RMarkdown document. Your instructor will walk you through this process
+and give you a brief overview of the graphical RMarkdown editor.</p>
 <hr />
 </div>
 <div id="loading-data-into-r" class="section level3">
@@ -965,6 +965,52 @@ assessed, as such we will not be providing detailed solutions. Please
 work in small groups and make sure you gain the attention of a
 demonstrator if you are struggling with any exercise.</p>
 <hr />
+</div>
+<div id="navigation-and-directory-management-on-the-command-line" class="section level3">
+<h3>Navigation and directory management on the command line</h3>
+<p>We can navigate the command line and manage our directories using a
+series of different commands. When you initiate a shell session you will
+be located in your <code>home</code> directory, we can confirm this by
+using the <code>pwd</code> command. We can also list the files in our
+current directory using the <code>ls</code> program. If you are
+unfamilar with either of these programs, remember you can check out the
+documentation by entering <code>man pwd</code> or
+<code>man ls</code>.</p>
+<div class="exercisebox">
+<p><strong>Exercise 1</strong></p>
+<ul>
+<li>Confirm that your current working directory is the your home
+directory.</li>
+<li>List the files in this directory.</li>
+<li>Compare the output of <code>ls</code> with <code>ls -all</code>.
+What additional information does ls -all provide?</li>
+</ul>
+</div>
+<hr />
+<p>You probably noticed that there isn’t too much in your home directory
+just yet! But lets go ahead and create a few directories and files for
+the purposes of this workshop. Recall that we can create new directories
+using the <code>mkdir</code> program and we can generate empty files
+using the <code>touch</code> command. We can move files with the
+<code>mv</code> command and copy them with the <code>cp</code>
+command.</p>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>In this example, I have created a new directory called
+<code>my_first_directory</code> and created two new files called
+<code>file1.txt</code> and <code>file2.txt</code>. Using the
+<code>mv</code> command, <code>file1.txt</code> and
+<code>file2.txt</code> are moved to <code>my_first_directory</code>. We
+could have also made file1.txt and file2.txt directly in
+<code>my_first_directory</code> by either navigating to it, or by
+pointing to the sub-directory.</p>
+<pre class="bash"><code>mkdir my_first_directory
+touch file1.txt file2.txt
+mv file1.txt file2.txt ./my_first_directory
+# Making files in sub directory
+touch my_first_directory/file1.txt my_first_directory/file2.txt 
+</code></pre>
+</div>
 </div>
 </div>
 </div>
