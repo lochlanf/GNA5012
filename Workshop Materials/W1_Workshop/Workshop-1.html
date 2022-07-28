@@ -966,8 +966,8 @@ work in small groups and make sure you gain the attention of a
 demonstrator if you are struggling with any exercise.</p>
 <hr />
 </div>
-<div id="navigation-and-directory-management-on-the-command-line" class="section level3">
-<h3>Navigation and directory management on the command line</h3>
+<div id="navigation-and-file-management-on-the-command-line" class="section level3">
+<h3>Navigation and file management on the command line</h3>
 <p>We can navigate the command line and manage our directories using a
 series of different commands. When you initiate a shell session you will
 be located in your <code>home</code> directory, we can confirm this by
@@ -1039,12 +1039,222 @@ rm temp.txt</code></pre>
 </div>
 <hr />
 <p>Another important feature of linux is the ability to create links to
-files. These links are called symbolic links, and they act like
-shortcuts. These are very useful in bioinformatics. We might use a
-symbolic link to point to a directory containing reference files that
-might be buried deep in the file system. We create symbolic links use
-the <code>ln</code> command</p>
+files. There are two types of links we can create, symbolic links
+(symlinks) and hard links. Symlinks act like shortcuts to the
+destination file, whereas hard links are a mirror of the linked file. In
+this sense, symlinks use substantially less disk space as the file
+merely contains the location of the file we are linking to. However, if
+the linked file is deleted, the symlink will no longer work. In
+contrast, hard links use more data but as they are a mirror of the
+linked file they will still work if the linked file is deleted. Thus
+there is a trade-off between ‘forgivingness’ of deletions and disk
+space.</p>
+<p>We generally rely on symlinks as these can point to directories and
+often the linked files are in a backed up portion of the server. For
+example, we might create a symlink to a reference genome that is stored
+elsewhere on the server.</p>
+<p>We can use the <code>ln</code> program to create these links. By
+default <code>ln</code> will create a hard link. The <code>-s</code>
+flag will tell the program to create a symlink.</p>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>Here is an example of how to create a symbolic link to the root. We
+can remove a symbolic link using rm</p>
+<pre class="bash"><code>ln -s / link_to_root
+rm link_to_root</code></pre>
 </div>
+<div class="exercisebox">
+<p><strong>Exercise 3</strong></p>
+<p>In the workshop_1 directory, create a symlink to your home directory.
+Remember the home directory is denoted by the <code>~</code> sign.</p>
+</div>
+<hr />
+</div>
+<div id="pipes-redirects-and-filters" class="section level3">
+<h3>Pipes, Redirects and Filters</h3>
+<p>In the lecture materials, you were exposed to pipes, redirects and
+filters. These are powerful tools for stringing commands together,
+writing the output of commands to files, and altering outputs generated
+by programs. Let’s start with a brief recap of redirects. You will
+recall that there are three streams in bash, Stdin, Stdout and
+Stderr.</p>
+<ul>
+<li>Stdin: This is the input provided to a command/program.</li>
+<li>Stdout: This is the default output of a command, usually returned to
+the terminal.</li>
+<li>Stderr: This is the error stream.</li>
+</ul>
+<p>There are several operators that we can use to redirect these
+streams</p>
+<ul>
+<li>Stdin can be redirected using the “&lt;” operator. This operator
+will allow us to provide a specific input to a command, this might be a
+file containing paths, for instance.</li>
+<li>Stdout can be redirected using the “&gt;” operator. You can use this
+operator to direct the Stdout to a file.</li>
+<li>Stderr can be redirected using the “2&gt;” operator. You can use
+this operator to direct Stderr to a file.</li>
+</ul>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>In this example, I redirect Stdout of <code>ls -all</code> to a file
+called <code>list.txt</code>. I can then provide <code>list.txt</code>
+as Stdin for another program, in this example that is the
+<code>cat</code> program. As we progress through semester you will
+appreciate more useful applications of Stdin &amp; Stdout redirects.</p>
+<pre class="bash"><code>ls -all &gt; list.txt
+cat &lt; list.txt</code></pre>
+</div>
+<div class="exercisebox">
+<p><strong>Exercise 4</strong></p>
+<ul>
+<li>List the contents of the workshop_1 directory using the
+<code>-all</code> flag and redirect the output to a file.</li>
+<li>Using the <code>less</code> program, view the file</li>
+<li>Compare what has been written to file with the output of the same
+command without a redirect.</li>
+</ul>
+</div>
+<p>We can also pass Stdout from one command directly to Stdin of
+another. This is known as a pipe, and we do this using the
+<code>|</code> operator.</p>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>Here is an example of the power of pipes. We begin by listing all the
+numbers between 1 and 20 using the <code>seq</code> command. We then
+pipe the output to <code>sort</code> to sort in reverse numeric order.
+This output is then piped to <code>grep</code> to select rows containing
+1, and finally _text is added to the end of each line ($) using
+<code>sed</code>. All of this was achieved without writing the result to
+file</p>
+<pre class="bash"><code>seq 20 | sort -rn | grep 1 | sed &#39;s/$/_text/&#39;</code></pre>
+</div>
+<p>The example above is also an excellent example of various filters.
+Recall that filters will modify the stream. For example, sort took the
+Stdout from seq and modified it by sorting reverse numerically. Below is
+a non-exhaustive list of common filters and their application</p>
+<ul>
+<li><code>grep</code>: This program will search for specific
+patterns/strings in data.</li>
+<li><code>sed</code>: This program will find modify patterns and
+strings. Most commonly used for substitution.</li>
+<li><code>sort</code>: This program will sort the input in a manner
+consistent with the flags provided to it.</li>
+<li><code>wc</code>: Will count the number bytes, characters, words etc
+in an input.</li>
+<li><code>awk</code>: Used to search, retrieve and manipulate data.</li>
+</ul>
+<div class="exercisebox">
+<p><strong>Exercise 5</strong></p>
+<ul>
+<li>Use the seq program to generate all numbers between 1 and 1000</li>
+<li>Pipe the output to grep, and use grep to find all numbers that
+<em>do not</em> include the number 10 in them</li>
+<li>Pipe the output to sort and sort in reverse numerical order</li>
+<li>Pipe the output to sed and append your name to the end of each
+line</li>
+</ul>
+</div>
+<hr />
+</div>
+<div id="loops" class="section level3">
+<h3>Loops</h3>
+<p>There are many occasions in scripting where we want to perform the
+same function or set of functions on multiple files. We can do this by
+constructing a loop. In the eModule, we discussed three types of
+loops.</p>
+<ul>
+<li><code>for</code> loops: These loops will continue cycling through a
+list of items, performing the same set of commands on each, until the
+list is exhausted. If there isn’t a set number of items, the loop is
+said to be infitite and will continue until interrupted. We would use a
+for loop in bioinformatics to analyse several samples, or sets of
+reads.</li>
+<li><code>while</code> loops: These loops will continue so long as a
+given condition is TRUE.</li>
+<li><code>until</code> loops: These loops will continue so long as a
+given condition is FALSE.</li>
+</ul>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>In this example, our loop will iterate over numbers 1 to 5 assigning
+each to the $var variable as the loop starts a new iteration. Note the
+manner in which we provided numbers 1 to 5, this is an example of brace
+expansion, a feature of the bash shell. We could’ve written
+<code>for var in 1 2 3 4 5</code> however this is longer and less
+convenient. The body of the loop then executes the touch command, which
+we know will create an empty file. The result is five new files called
+<code>1.txt 2.txt 3.txt 4.txt 5.txt</code>.</p>
+<pre class="bash"><code>#!/bin/bash
+for var in {1..5}
+do
+touch ${var}.txt
+done</code></pre>
+<p>You will also notice the <code>#!/bin/bash</code> line at the start
+of the file. This is called the shebang and points to the bash shell.
+This will make the script executable.</p>
+</div>
+<div class="exercisebox">
+<p><strong>Exercise 6</strong></p>
+<ul>
+<li>Using the <a href="https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/">nano
+command line editor</a> open the for_loop.sh file that you created in
+your scripts directory</li>
+<li>Include a shebang as the first line of your script</li>
+<li>Write a for loop that iterate over numbers 1 to 10, assigning them
+to a variable called num</li>
+<li>In the body of the loop, use the echo command print the numbers are
+return them to the terminal</li>
+<li>Save your script (ctrl+O)</li>
+<li>Execute your script <code>sh for_loop.sh</code></li>
+<li>Copy the script into your notebook.</li>
+</ul>
+</div>
+<p>We can also use for loops to iterate over a set of files and perform
+the same commands on each file. An example of when we might do this is
+when we are processing several sets of DNA sequencing reads. The first
+step is to conduct some quality control. If you have 10 files, it is
+much easier to construct a loop over these files than type each command
+individually.</p>
+<div class="examplebox">
+<p><strong>Example</strong></p>
+<p>In this example, we iterate over all fastq files in the current
+working directory using the wildcard operator: <code>*.fastq</code>. We
+then search these fastq files for a the string <code>AGGTC</code> and
+write the lines containing this string to a file.</p>
+<pre class="bash"><code>#!/bin/bash
+for file in ./*.fastq; do
+grep AGGTC $file &gt; &quot;./${file%.fastq}_AGGTC.fastq&quot;
+done</code></pre>
+<p>I’ve written this to a file and appended AGGTC to the end of the file
+name. If we simply point our redirect to <code>.. &gt; ${file}</code> we
+will have the fastq extension within our file name.
+<code>${file%.fastq}</code> on the other hand will keep everything
+except the extension, and therefore is useful when writing new files in
+loops.</p>
+</div>
+<div class="exercisebox">
+<p><strong>Exercise 7</strong></p>
+<ul>
+<li>Execute the following command in your data directory
+<code>wget INSERT_LINK_HERE</code>. This will download some fastq
+data.</li>
+<li>Using the <a href="https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/">nano
+command line editor</a> create a new script called <code>loop2.sh</code>
+in your scripts directory</li>
+<li>Include a shebang as the first line of your script</li>
+<li>Write a script the will loop over the .fastq files in your data
+directory (Hint: use relative or absolute paths to point to this
+directory), identify all reads containing <code>ATTGCC</code> and sort
+them alphabetically.</li>
+<li>Write the output to files appended with
+<code>_ATTGCC_sort</code></li>
+</ul>
+</div>
+</div>
+</div>
+<div id="assessment-1" class="section level2">
+<h2>Assessment 1</h2>
 </div>
 </div>
 
