@@ -1,0 +1,155 @@
+---
+title: "Assessment 1 - NAME"
+output: 
+  html_document: 
+    theme: yeti
+---
+#  {.tabset}
+
+## R exercises - In class
+
+### Exercise 1
+Code description
+```{r R-Ex1, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 2
+Code description
+```{r R-Ex2, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 3
+Code description
+```{r R-Ex3, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 4
+Code description
+```{r R-Ex4, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 5
+Code description
+```{r R-Ex5, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 6
+Code description
+```{r R-Ex6, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 7
+Code description
+```{r R-Ex7, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 8
+Code description
+```{r R-Ex8, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+## Bash exercises - In class
+
+### Exercise 1
+Code description
+```{bash, Bash-ex1, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 2
+Code description
+```{bash, Bash-ex2, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 3
+Code description
+```{bash, Bash-ex3, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 4
+Code description
+```{bash, Bash-ex4, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 5
+Code description
+```{bash, Bash-ex5, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 6
+Code description
+```{bash, Bash-ex6, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 7
+Code description
+```{bash, Bash-ex7, echo=TRUE, eval=FALSE}
+echo code
+```
+
+## R exercises - Out of class
+
+### Exercise 1
+Code description
+```{r R-OOC-Ex1, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 2
+Code description
+```{r R-OOC-Ex2, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 3
+Code description
+```{r R-OOC-Ex3, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+### Exercise 4
+Code description
+```{r R-OOC-Ex4, echo=TRUE, eval=TRUE}
+print("Code")
+```
+
+## Bash exercises - Out of class
+
+### Exercise 1
+Code description
+```{bash, Bash-OOC-ex1, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 2
+Code description
+```{bash, Bash-OOC-ex2, echo=TRUE, eval=FALSE}
+echo code
+```
+
+### Exercise 3
+Code description
+```{bash, Bash-OOC-ex3, echo=TRUE, eval=FALSE}
+echo code
+```
+
+## R Markdown exercise
+
+### Exercise 1
+Code description
+
+### Exercise 2
+Code description

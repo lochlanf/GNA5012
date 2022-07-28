@@ -11,7 +11,7 @@
 
 
 
-<title>Workshop 1</title>
+<title>Workshop 1 - Introduction to R and Bash</title>
 
 <script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
 // be compatible with the behavior of Pandoc < 2.8).
@@ -398,7 +398,8 @@ pre code {
 
 
 
-<h1 class="title toc-ignore">Workshop 1</h1>
+<h1 class="title toc-ignore">Workshop 1 - Introduction to R and
+Bash</h1>
 
 </div>
 
@@ -438,9 +439,29 @@ or linux based PC, you will have terminal in-built. If you are on a
 windows-based PC, please download <a href="https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe">PuTTY</a>.</p>
 <div id="accessing-virtual-machines-using-putty" class="section level4">
 <h4>Accessing virtual machines using PuTTY</h4>
+<p>If you are using Windows you will access your virtual machines using
+PuTTY.</p>
+<div class="figure">
+<img src="data:image/png;base64,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" alt />
+<p class="caption">PuTTY</p>
+</div>
+<p>In the hostname (or IP address) box, enter the hostname that you were
+provided. Ensure the connection type is SSH. Click open. You will be
+prompted to enter your username and password in the terminal window.
+Enter your credentials and click enter. Note you will not see the
+characters as they are typed. You are now in your home directory on the
+VM.</p>
 </div>
 <div id="accessing-virtual-machines-using-the-terminal-app" class="section level4">
 <h4>Accessing virtual machines using the terminal app</h4>
+<p>To access your VM using the terminal app on Mac, search for the
+terminal app using the search bar in the top right hand corner of your
+computer. Type the following command <code>ssh username@hostname</code>
+where username is the username you were provided and hostname is the
+hostname provided. Click enter, you will be asked for a password. Enter
+the password provided and click enter. Note you will not see the
+characters as they are typed. You are now in your home directory on the
+VM.</p>
 </div>
 <div id="the-monash-vpn" class="section level4">
 <h4>The Monash VPN</h4>
@@ -469,10 +490,9 @@ visualisations</p></li>
 <p><strong>Prerequisites:</strong> This section of the workshop assumes
 that students have successfully installed R Studio, and reviewed the
 preclass lecture on R.</p>
-<p><strong>Important:</strong> Remember to include all your code as code
-chunks in your RMarkdown document, with text describing what your code
-does. This will be assessed. Please grab a demonstrator if you are still
-unsure how to do this.</p>
+<p><strong>Important:</strong> All code and associated explanations
+should be entered into the RMarkdown template provided for assessment.
+You can find the template</p>
 <p><strong>Note:</strong> The exercises in this workshop will be
 assessed, as such we will not be providing detailed solutions. Please
 work in small groups and make sure you gain the attention of a
@@ -485,7 +505,10 @@ demonstrator if you are struggling with any exercise.</p>
 their own working directory, environment and history. Let’s start by
 making an R project for this workshop in a new directory and creating an
 RMarkdown document. Your instructor will walk you through this process
-and give you a brief overview of the graphical RMarkdown editor.</p>
+and give you a brief overview of the graphical RMarkdown editor. You
+will then load the RMarkdown template document which you will use to
+enter your code and explanations. <a href="https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728">Click
+here for the RMarkdown assessment template</a></p>
 <hr />
 </div>
 <div id="loading-data-into-r" class="section level3">
@@ -510,12 +533,13 @@ write.csv(data.frame(seq(1:6), seq(7:12)), file=&quot;example.csv&quot;)
 example &lt;- read.table(&quot;example.csv&quot;, header = TRUE, sep=&quot;,&quot;)</code></pre>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 1:</strong> Download the workshop data from the
-GNA5012 moodle site to a subdirectory of your R Project working
-directory called <code>data</code>. Load the <code>Workshop1</code> data
-files, note the file extension and that the first row contains the
-header. Read it into your R environment as a variables called
-<code>clin_dat_1, mrna_dat</code>.</p>
+<p><strong>Exercise 1:</strong></p>
+<p>Download the workshop data from the GNA5012 moodle site to a
+subdirectory of your R Project working directory called
+<code>data</code>. Load the <code>Workshop1_clinical_dat.txt</code> and
+<code>Workshop1_mrna_dat.txt</code> data files, note the file extension
+and that the first row contains the header. Read it into your R
+environment as a variables called <code>clin_dat_1, mrna_dat</code>.</p>
 <p>These files are derived from <a href="https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga">The
 Cancer Genome Atlas</a> project. This project performed comprehensive
 genomic profiling on thousands of patient samples to improve our
@@ -552,14 +576,15 @@ str(iris)</code></pre>
 1:4 contain double data and column 5 contains factor data.</p>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 2:</strong> Use the <code>str</code> function to
-identify the underlying structure, data types, number of observations
-and number of variables our workshop data. Comment on the key
-characteristics of the data structure and data types (refer to lecture
-notes). <strong>Note</strong> the mrna_dat data has 19490 variables,
-find the data type of the first five variables. Subset the data using
-square brackets <code>str(mrna_dat[1:5,1:5)</code> as indicated in the
-lecture materials.</p>
+<p><strong>Exercise 2:</strong></p>
+<p>Use the <code>str</code> function to identify the underlying
+structure, data types, number of observations and number of variables
+our workshop data. Comment on the key characteristics of the data
+structure and data types (refer to lecture notes). <strong>Note</strong>
+the mrna_dat data has 19490 variables, find the data type of the first
+five variables. Subset the data using square brackets
+<code>str(mrna_dat[1:5,1:5)</code> as indicated in the lecture
+materials.</p>
 </div>
 <pre><code>## &#39;data.frame&#39;:    276 obs. of  20 variables:
 ##  $ PATIENT_ID          : chr  &quot;TCGA-A6-2670&quot; &quot;TCGA-A6-2677&quot; &quot;TCGA-AA-3524&quot; &quot;TCGA-AA-3529&quot; ...
@@ -600,11 +625,12 @@ is.factor(iris$Species)</code></pre>
 <pre><code>## [1] TRUE</code></pre>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 3:</strong> Coerce the
-<code>EXPRESSION_SUBTYPE</code> and <code>METHYLATION_SUBTYPE</code>
-variables in the <code>clin_dat_1</code> dataframe to factors. Confirm
-that the variables have been successfully coerced using the
-<code>is.factor</code> function.</p>
+<p><strong>Exercise 3:</strong></p>
+<p>Coerce the <code>EXPRESSION_SUBTYPE</code> and
+<code>METHYLATION_SUBTYPE</code> variables in the
+<code>clin_dat_1</code> dataframe to factors. Confirm that the variables
+have been successfully coerced using the <code>is.factor</code>
+function.</p>
 <p>What are the characteristics of this data type? In your notebook,
 write a brief summary of all basic data types in R.</p>
 </div>
@@ -632,8 +658,9 @@ summary(iris)</code></pre>
 ##                 
 ## </code></pre>
 <div class="exercisebox">
-<p><strong>Exercise 4:</strong> Summarise the <code>clin_dat_1</code>
-dataframe. What do you notice about the output for each data type?</p>
+<p><strong>Exercise 4:</strong></p>
+<p>Summarise the <code>clin_dat_1</code> dataframe. What do you notice
+about the output for each data type?</p>
 </div>
 <hr />
 </div>
@@ -693,12 +720,13 @@ them with a comma, ie.
 <code>select(iris, Species, Petal.Length) would select both Species and Petal.Length</code></p>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 5:</strong> Subset PATIENT_ID, SAMPLE_ID and
-EXPRESSION_SUBTYPE from the clin_dat_1 dataframe using any of the above
-methods. Assign them to new variables and construct a dataframe from
-these variables using the <code>data.frame</code> function, and assign
-this to a variable. <strong>Note:</strong> Dplyr::select is the most
-efficient way of completing this task</p>
+<p><strong>Exercise 5:</strong></p>
+<p>Subset PATIENT_ID, SAMPLE_ID and EXPRESSION_SUBTYPE from the
+clin_dat_1 dataframe using any of the above methods. Assign them to new
+variables and construct a dataframe from these variables using the
+<code>data.frame</code> function, and assign this to a variable.
+<strong>Note:</strong> Dplyr::select is the most efficient way of
+completing this task</p>
 </div>
 <hr />
 <p>Sometimes we want to merge data structures. In our workshop data, we
@@ -734,11 +762,11 @@ nrow(complete_dat)</code></pre>
 <pre><code>## [1] 19509</code></pre>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 6:</strong> Join your <code>clin_subset</code> and
-<code>mrna_dat</code> dataframes by the <code>SAMPLE_ID</code>
-identifier. Assign this to the variable
-<code>expressionsubtype_mrna_dat</code>. Comment on the number of rows
-and columns</p>
+<p><strong>Exercise 6:</strong></p>
+<p>Join your <code>clin_subset</code> and <code>mrna_dat</code>
+dataframes by the <code>SAMPLE_ID</code> identifier. Assign this to the
+variable <code>expressionsubtype_mrna_dat</code>. Comment on the number
+of rows and columns</p>
 </div>
 <hr />
 <p>Sometimes we prefer our data to be in long format rather than wide
@@ -861,11 +889,12 @@ an non-parametric test that compares the medians of &gt;2 groups</li>
 two continous variables.</li>
 </ul>
 <div class="examplebox">
-<p><strong>Example</strong> In this example, I use the <code>aov</code>
-function to test whether there are differences in Petal.Width between
-<code>Species</code>, and the <code>lm</code> function to test whether
-there is an association between Petal.Width and Petal.Length using the
-<code>iris</code> data.</p>
+<p><strong>Example</strong></p>
+<p>In this example, I use the <code>aov</code> function to test whether
+there are differences in Petal.Width between <code>Species</code>, and
+the <code>lm</code> function to test whether there is an association
+between Petal.Width and Petal.Length using the <code>iris</code>
+data.</p>
 <pre class="r"><code>data(iris)
 #aov(y~x, data)
 ANOVA_Petal.Width_Species &lt;- aov(Petal.Width ~ Species, iris)
@@ -904,35 +933,12 @@ therefore there is a significant interaction between Species and
 Petal.Width, and Petal.Width and Petal.Length</p>
 </div>
 <div class="exercisebox">
-<p><strong>Exercise 8:</strong> Perform a linear regression on the data
-used to generate the first plot in exercise 7 and an ANOVA on the data
-used to generate the second plot in the same exercise. Remember you will
-need to use both the relevent statistical function (see above), and the
-summary function. Comment on what the output means.</p>
-<pre><code>## 
-## Call:
-## lm(formula = IPO8 ~ KRAS, data = expressionsubtype_mrna_dat)
-## 
-## Residuals:
-##      Min       1Q   Median       3Q      Max 
-## -10.2612  -1.4325  -0.1178   1.1267  10.1208 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  3.37548    0.36169   9.333   &lt;2e-16 ***
-## KRAS         0.84422    0.04537  18.609   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 2.566 on 242 degrees of freedom
-## Multiple R-squared:  0.5886, Adjusted R-squared:  0.5869 
-## F-statistic: 346.3 on 1 and 242 DF,  p-value: &lt; 2.2e-16</code></pre>
-<pre><code>##                     Df Sum Sq Mean Sq F value   Pr(&gt;F)    
-## EXPRESSION_SUBTYPE   2  195.7   97.87   7.368 0.000814 ***
-## Residuals          204 2710.0   13.28                     
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 37 observations deleted due to missingness</code></pre>
+<p><strong>Exercise 8:</strong></p>
+<p>Perform a linear regression on the data used to generate the first
+plot in exercise 7 and an ANOVA on the data used to generate the second
+plot in the same exercise. Remember you will need to use both the
+relevent statistical function (see above), and the summary function.
+Comment on what the output means.</p>
 </div>
 <p>ccc</p>
 <hr />
@@ -956,10 +962,9 @@ commands</p></li>
 that students have access to PuTTY/Terminal, have successfully connected
 to your linux virtual machine, and reviewed the preclass lecture on
 Bash.</p>
-<p><strong>Important:</strong> Remember to include all your code as code
-chunks in your RMarkdown document, with text describing what your code
-does. This will be assessed. Please grab a demonstrator if you are still
-unsure how to do this.</p>
+<p><strong>Important:</strong> All code and associated explanations
+should be entered into the RMarkdown template provided for
+assessment.</p>
 <p><strong>Note:</strong> The exercises in this workshop will be
 assessed, as such we will not be providing detailed solutions. Please
 work in small groups and make sure you gain the attention of a
@@ -1233,12 +1238,27 @@ will have the fastq extension within our file name.
 except the extension, and therefore is useful when writing new files in
 loops.</p>
 </div>
+<p>Now it’s your turn, but first we need to transfer some data from our
+local computer to the virtual machine. We can transfer data to and from
+virtual machines using the <code>scp</code> command from either the
+terminal (Not connected to your VM) or the windows command line (after
+you have installed putty). <strong>Note for windows</strong>: you will
+use <code>pscp -scp</code> in every place you see a command with
+<code>scp</code> for example:</p>
+<p><code>scp file.text user@hostname:/path/on/server/</code> will become
+<code>pscp -scp file.txt user@hostname:/path/on/sever</code></p>
+<ul>
+<li><p>To transfer files to the VM:
+<code>scp file.text user@hostname:/path/on/server/</code></p></li>
+<li><p>To transfer files from the VM to your PC:
+<code>scp username@hostname:/path/to/file local_destination</code></p></li>
+</ul>
 <div class="exercisebox">
 <p><strong>Exercise 7</strong></p>
 <ul>
-<li>Execute the following command in your data directory
-<code>wget INSERT_LINK_HERE</code>. This will download some fastq
-data.</li>
+<li>Upload the sample_1.fastq and sample_2.fastq files from your data
+directory on your local computer to your VM using the <code>scp</code>
+program.</li>
 <li>Using the <a href="https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/">nano
 command line editor</a> create a new script called <code>loop2.sh</code>
 in your scripts directory</li>
@@ -1255,6 +1275,70 @@ them alphabetically.</li>
 </div>
 <div id="assessment-1" class="section level2">
 <h2>Assessment 1</h2>
+<div id="assessment-1-1" class="section level3">
+<h3>Assessment 1</h3>
+<p>For assessment 1, students are to upload an RMarkdown notebooks
+pertaining to the in-class exercises and the out-of-class exercises.
+Please see Moodle for a more detailed explanation of this assessment
+item. <a href="https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728">Click
+here for the RMarkdown assessment template</a></p>
+</div>
+<div id="in-class-component" class="section level3">
+<h3>In class component</h3>
+<p>The exercises you complete in todays workshop are assessed as part of
+Assessment 1. You must include all the code you generate as part of the
+exercise and an explanation of what the code does in the RMarkdown
+template provided. All exercises are equally weighted.</p>
+</div>
+<div id="out-of-class-component" class="section level3">
+<h3>Out of class component</h3>
+<p>Students must complete the following exercises, including all code
+and descriptions in the RMarkdown template provided in the Assessment 1
+folder on Moodle.</p>
+<p><strong>Bash activities (20% - 8 Marks)</strong></p>
+<ul>
+<li>Using the ls command, list all files in the current directory and
+use &gt; to redirect the standard output (Stdout) of ls to a file (2
+Marks)</li>
+<li>Using the seq command, list all numbers between 0 and 100. Pipe ( |
+) the standard output to grep and extract numbers containing “2”. Pipe
+Stdout to sed substitute, append an exclamation mark to the end of every
+line. The end of lines is denoted by “$” in unix.</li>
+<li>Write an executable script that loops over a set of .fastq files
+your data directory (the fastq files provided in the worksho. Extract
+all reads that contain the string GGTGGT and write them to a new file
+with “_AGGTC” appended to the end of the file name Hint: This will
+require a for loop and grep. When redirecting Stdout your variable will
+need to be contained in {}. (4 Marks)</li>
+</ul>
+<p><strong>R Activities (20% - 8 Marks)</strong></p>
+<ul>
+<li>Using the summary function, find the mean and median of every
+variable in the mtcars dataset. Use the str function to identify the
+data structure, number of variables, and datatypes contained within the
+dataset. (2 marks)</li>
+<li>Using the melt function from the data.table library, convert the
+mtcars data from wide to long format. Ensure that the rownames are
+maintained as a variable (Hint: Load the tidyverse library and consult
+the rownames_to_columns function) (2 marks)</li>
+<li>Using the boxplot function, construct a boxplot that visualises the
+relationship between cyl and mpg. Relabel the axis with more meaningful
+titles (ie. Miles per gallon, cylinder) (2 marks)</li>
+<li>Use the aov function to perform an ANOVA to test if there is a
+relationship between cyl and mpg (2 marks)</li>
+</ul>
+<p><strong>RMarkdown formatting Activities (15% - 6 Marks)</strong></p>
+<ul>
+<li>Add a code chunk to your notebook, modify the settings of the code
+chunk to set eval to false. Write any basic R code in the code chunk. (2
+marks)</li>
+<li>Write a paragraph describing your motivation to study genome
+analytics. You paragraph should contain a title with a different sized
+header when compared with the text of the paragraph. Include a
+photograph that best captures your motivation, with a link to the source
+of the photograph (4 Marks).</li>
+</ul>
+</div>
 </div>
 </div>
 

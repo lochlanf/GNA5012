@@ -1,0 +1,727 @@
+---
+title: "Workshop 1 - Introduction to R and Bash"
+output:
+  html_document:
+    theme: yeti
+  pdf_document: default
+---
+
+```{css, echo=FALSE}
+.exercisebox {
+  padding: 1em;
+  background: #ffffcc;
+  color: black;
+  border: 2px #ffffcc;
+  border-radius: 10px;
+}
+
+.examplebox {
+  padding: 1em;
+  background: #e6ffff;
+  color: black;
+  border: 2px #e6ffff;
+  border-radius: 10px;
+}
+
+.center {
+  text-align: center;
+
+```
+
+#  {.tabset}
+
+## Part 1 - Virtual Machines
+
+### Virtual Machines
+
+In this course we will make extensive use of cloud computing and virtual machines. You have been provided credentials that will allow you to access these virtual machines 24/7. To access any remote server, we use the terminal and the `ssh` command. If you are on a mac or linux based PC, you will have terminal in-built. If you are on a windows-based PC, please download [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe).
+
+#### Accessing virtual machines using PuTTY
+
+If you are using Windows you will access your virtual machines using PuTTY.
+
+![PuTTY](https://www.ssh.com/hubfs/Imported_Blog_Media/Initial_Window_with_Configuration__Host_Name__and_Profiles-2.png)
+
+In the hostname (or IP address) box, enter the hostname that you were provided. Ensure the connection type is SSH. Click open. You will be prompted to enter your username and password in the terminal window. Enter your credentials and click enter. Note you will not see the characters as they are typed. You are now in your home directory on the VM.
+
+#### Accessing virtual machines using the terminal app
+
+To access your VM using the terminal app on Mac, search for the terminal app using the search bar in the top right hand corner of your computer. Type the following command `ssh username@hostname` where username is the username you were provided and hostname is the hostname provided. Click enter, you will be asked for a password. Enter the password provided and click enter. Note you will not see the characters as they are typed. You are now in your home directory on the VM.
+
+#### The Monash VPN
+
+Due to security constraints, our virtual machines can only be accessed from within the Monash network. If you are offsite, you will need to first connect to the Monash Virtual Private Network (VPN). Detailed instructions can be found on the [Monash website](https://www.monash.edu/esolutions/network/vpn). Take the time now to install the VPN software and test your connection, this will be imperative for you accessing the VPN while offsite.
+
+## Part 2 - R & RMarkdown
+
+### **Learning Objectives**:
+
+**At the conclusion of this workshop students should be able to:**
+
+-   Generate rich electronic notebooks that are comprised of code and markdown annotations using Rmarkdown
+
+-   Load and perform basic data manipulation using R
+
+-   Apply the base R plotting functions to generate data visualisations
+
+**Prerequisites:** This section of the workshop assumes that students have successfully installed R Studio, and reviewed the preclass lecture on R.
+
+**Important:** All code and associated explanations should be entered into the RMarkdown template provided for assessment. You can find the template
+
+**Note:** The exercises in this workshop will be assessed, as such we will not be providing detailed solutions. Please work in small groups and make sure you gain the attention of a demonstrator if you are struggling with any exercise.
+
+------------------------------------------------------------------------
+
+### Creating a project in R
+
+RStudio allows users to create R projects, each of which will have their own working directory, environment and history. Let's start by making an R project for this workshop in a new directory and creating an RMarkdown document. Your instructor will walk you through this process and give you a brief overview of the graphical RMarkdown editor. You will then load the RMarkdown template document which you will use to enter your code and explanations. [Click here for the RMarkdown assessment template](https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728)
+
+------------------------------------------------------------------------
+
+### Loading data into R
+
+Most of the data we be generate external to R and needs to be loaded into our environment before we can analyse it. We can load data using the following functions:
+
+-   `read.table read.csv read.csv2 read.delim read.delim2` set of functions: These are included in base R. Each of these functions has several arguments that can be used to modify how files are read. These include to specify a delimiter, set whether the file has a header, and whether any lines should be ignored. For a full list of arguments and detailed documentation type `?read.table` into the console.
+
+::: examplebox
+**Example:**
+
+```{r, eval=FALSE}
+##Create example data and write to file - you don't need to do this step
+write.csv(data.frame(seq(1:6), seq(7:12)), file="example.csv")
+##Read in example.csv
+example <- read.table("example.csv", header = TRUE, sep=",")
+```
+:::
+
+::: exercisebox
+**Exercise 1:**
+
+Download the workshop data from the GNA5012 moodle site to a subdirectory of your R Project working directory called `data`. Load the `Workshop1_clinical_dat.txt` and `Workshop1_mrna_dat.txt` data files, note the file extension and that the first row contains the header. Read it into your R environment as a variables called `clin_dat_1, mrna_dat`.
+
+These files are derived from [The Cancer Genome Atlas](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) project. This project performed comprehensive genomic profiling on thousands of patient samples to improve our understanding the aetiology and biology of cancer. The consortia first published these data \~ 10 years ago, and simultaneously released the data to the research community. This was a major advance in cancer genomics and has facilitated several major discoveries. We are using data from the COADREAD subarm, which corresponds to data from patients with colorectal cancers.
+:::
+
+We are loading two data files, containing clinical data and mrna-seq data, respectively.
+
+```{r R-Ex1, echo=TRUE, eval=TRUE}
+clin_dat_1 <- read.table(file = "./data/Workshop1_clinical_dat1.txt",
+                         sep = "\t", 
+                         header=TRUE)
+mrna_dat <- read.table(file = "./data/Workshop1_mrna_dat.txt",
+                         sep = "\t", 
+                         header=TRUE)
+```
+
+------------------------------------------------------------------------
+
+### Data Exploration
+
+Let's take a closer look at our `dat` variable. Recall that there are several data types and structures in R. We can use the `str` function to identify the structure and underlying data types of data.
+
+::: examplebox
+**Example:**
+
+```{r str-example}
+##Load the iris data included in base R
+data(iris)
+##Identify the structure and type of data in iris
+str(iris)
+```
+
+Here we can see that the iris data structure is a data.frame. Columns 1:4 contain double data and column 5 contains factor data.
+:::
+
+::: exercisebox
+**Exercise 2:**
+
+Use the `str` function to identify the underlying structure, data types, number of observations and number of variables our workshop data. Comment on the key characteristics of the data structure and data types (refer to lecture notes). **Note** the mrna_dat data has 19490 variables, find the data type of the first five variables. Subset the data using square brackets `str(mrna_dat[1:5,1:5)` as indicated in the lecture materials.
+:::
+
+```{r R-Ex2, echo=TRUE, eval=TRUE}
+str(clin_dat_1)
+str(mrna_dat[1:5,1:5])
+```
+
+------------------------------------------------------------------------
+
+You might notice that R has read some of our variables as character variables that might be better suited as factor variables. We can coerce data types using the `as.insert_data_type` commands.
+
+::: examplebox
+**Example:**
+
+```{r}
+data(iris)
+iris$Species <- as.factor(iris$Species)
+is.factor(iris$Species)
+```
+:::
+
+::: exercisebox
+**Exercise 3:**
+
+Coerce the `EXPRESSION_SUBTYPE` and `METHYLATION_SUBTYPE` variables in the `clin_dat_1` dataframe to factors. Confirm that the variables have been successfully coerced using the `is.factor` function.
+
+What are the characteristics of this data type? In your notebook, write a brief summary of all basic data types in R.
+:::
+
+```{r, R-Ex3, eval=TRUE, echo=TRUE}
+clin_dat_1$METHYLATION_SUBTYPE <- as.factor(clin_dat_1$METHYLATION_SUBTYPE)
+clin_dat_1$EXPRESSION_SUBTYPE <- as.factor(clin_dat_1$EXPRESSION_SUBTYPE)
+
+```
+
+------------------------------------------------------------------------
+
+Lets take a deeper dive into our data. The `summary` function will generate summary statistics for all the variables in a dataframe. Notice that for numeric variables we are given the minimum, maximum, median, mean and quartiles of the data. For factor variables we are given the counts for each level.
+
+**Example**
+
+```{r}
+data(iris)
+summary(iris)
+```
+
+::: exercisebox
+**Exercise 4:**
+
+Summarise the `clin_dat_1` dataframe. What do you notice about the output for each data type?
+:::
+
+------------------------------------------------------------------------
+
+### Data Manipulation
+
+Sometimes we only want to deal with specific variables or elements of an object. For dataframes, we can access specific variables by name using the `$` operator. We can also access elements using our square brackets. We can take this one step further and assign this to a variable.
+
+::: examplebox
+**Example**
+
+```{r}
+###Remember that the head function will return the first 6 observations
+head(iris$Species)
+###[row,column] or [row:row, column:column] for ranges
+head(iris[,5])
+irisSpecies <- head(iris$Species)
+irisSpecies
+
+```
+
+Notice how we arrived at the same result?
+:::
+
+Although Base R has some functions for data manipulation, the [dplyr](https://dplyr.tidyverse.org/articles/dplyr.html) package was designed specifically for data manipulation and contains several highly useful functions. For example, the `select` function will select multiple variables from dataframes by name, and the `filter` function will select observations based on values. The \`dplyr is part of the [tidyverse](https://www.tidyverse.org) set of packages. I recommend you peruse the documentation of these packages. Here I use dplyr to perform the same task as above.
+
+::: examplebox
+**Example**
+
+```{r}
+###First we install the tidyverse, this is commented out because I have previously installed it.
+#install.packages("tidyverse")
+#Next we load the package
+library(tidyverse)
+IrisSpecies<- select(iris, Species)
+str(IrisSpecies)
+```
+
+Here, we have subsetted species fromn the iris data. Note how select maintains the data structure as data.frame, and the Species variable as a factor. Select can also be applied to several columns by separating them with a comma, ie. `select(iris, Species, Petal.Length) would select both Species and Petal.Length`
+:::
+
+::: exercisebox
+**Exercise 5:**
+
+Subset PATIENT_ID, SAMPLE_ID and EXPRESSION_SUBTYPE from the clin_dat_1 dataframe using any of the above methods. Assign them to new variables and construct a dataframe from these variables using the `data.frame` function, and assign this to a variable. **Note:** Dplyr::select is the most efficient way of completing this task
+
+```{r, R-Ex5, eval=TRUE, echo=TRUE}
+PATIENT_ID <- clin_dat_1$PATIENT_ID
+SAMPLE_ID <- clin_dat_1$SAMPLE_ID
+EXPRESSION_SUBTYPE <-clin_dat_1$EXPRESSION_SUBTYPE
+clin_subset <- data.frame(PATIENT_ID, SAMPLE_ID, EXPRESSION_SUBTYPE)
+
+##OR##
+library(tidyverse)
+clin_subset <- select(clin_dat_1, PATIENT_ID, SAMPLE_ID, EXPRESSION_SUBTYPE)
+
+```
+:::
+
+------------------------------------------------------------------------
+
+Sometimes we want to merge data structures. In our workshop data, we have the `mrna_dat` data.frame that contains gene expression data from an RNAseq experiment, the `clin_dat_1` data.frame which contains clinical information and our `clin_subset` which contains identifiers and expression subtypes. Lets look at how we might combine the `mrna_dat` and `clin_subset` data.
+
+The dplyr package contains the `join` family of functions. These functions will combine two dataframes based on specific rows containing identical information. There are four join functions:
+
+-   `inner_join()`: Retain only rows that are in both x and y
+-   `left_join()`: Retain all rows in x
+-   `right_join()`: Retain all rows in y
+-   `full_join()`: Retain all rows
+
+Note that for left, right and full joins any non-matching rows will be filled with NA in the relevent columns. Most of the time, we are interested in building a consensus dataframe with complete data, and would choose the `inner_join` function.
+
+::: examplebox
+**Example**
+
+In this example, I have joined the `clin_dat_1` dataframe to the mrna_dat dataframe using the `SAMPLE_ID` columns as common identifiers.
+
+```{r}
+complete_dat <- inner_join(clin_dat_1, mrna_dat, by = "SAMPLE_ID")
+nrow(complete_dat)
+ncol(complete_dat)
+
+```
+:::
+
+::: exercisebox
+**Exercise 6:**
+
+Join your `clin_subset` and `mrna_dat` dataframes by the `SAMPLE_ID` identifier. Assign this to the variable `expressionsubtype_mrna_dat`. Comment on the number of rows and columns
+
+```{r, R-Ex6, eval=TRUE, echo=TRUE}
+expressionsubtype_mrna_dat <- inner_join(clin_subset, mrna_dat,
+                                         by = "SAMPLE_ID")
+```
+:::
+
+------------------------------------------------------------------------
+
+Sometimes we prefer our data to be in long format rather than wide format.
+
+![](https://www.statology.org/wp-content/uploads/2021/12/wideLong1-1.png){width="524"}
+
+We can convert from wide to long data using the `melt` function. Note, by default the melt function discards rownames. If you use this function you should always tranafer rownaes to a column.
+
+::: examplebox
+**Example**
+
+In this example we convert the `expressionsubtype_mrna_dat` data from wide to long format
+
+```{r, eval=TRUE}
+#install.packages("data.table")
+library(data.table)
+melt(expressionsubtype_mrna_dat, id = c("PATIENT_ID","SAMPLE_ID", "EXPRESSION_SUBTYPE")) %>% head()
+```
+:::
+
+------------------------------------------------------------------------
+
+### Plotting & basic data analysis
+
+R can generate powerful and highly reproducible visualisations. In base R we have the following suite of plotting functions
+
+-   `plot()`: Basic X-Y plotting
+
+::: examplebox
+**Example**
+
+```{r, eval=TRUE}
+#install.packages("data.table")
+data(iris)
+##plot(y ~ x, data)
+plot(Petal.Length ~ Petal.Width, data = iris)
+```
+:::
+
+-   `boxplot()`: Basic boxplots
+
+::: examplebox
+**Example**
+
+```{r, eval=TRUE}
+#install.packages("data.table")
+data(iris)
+##boxplot(y ~ x, data)
+boxplot(Petal.Length ~ Species, data = iris)
+```
+:::
+
+-   `hist()` & `dens()`: Basic histograms and density plots
+
+::: examplebox
+**Example**
+
+```{r, eval=TRUE}
+#install.packages("data.table")
+data(iris)
+##hist(data$x)
+hist(iris$Sepal.Width)
+```
+:::
+
+We can also modify the axis titles, the axis limits and other parameters using different arguments within these functions. Consult the function documentation for the specific flags.
+
+::: exercisebox
+**Exercise 7:**
+
+-   Construct a basic X-Y scatterplot of `KRAS` and `IPO8` variables from the `expressionsubtype_mrna_dat`. Comment on any relationships observed
+-   Construct a basic boxplot of `KRAS` expression by EXPRESSION_SUBTYPE. Comment on any relationships observed.
+-   Ensure all axis are labelled appropriately. These data units are FPKM.
+
+```{r, R-Ex7, eval=TRUE, echo=TRUE, fig.show='show'}
+plot(IPO8 ~ KRAS, expressionsubtype_mrna_dat, xlab = "KRAS Expression (FPKM)", ylab = "IPO8 Expression (FPKM)")
+boxplot(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat, xlab = "Expression Subtype", ylab = "KRAS Expression (FPKM)")
+```
+:::
+
+------------------------------------------------------------------------
+
+You might have noticed that there was an some indication that there were relationships between our variables. We can use R to conduct hypothesis testing to see whether these relationships are statistically significant. R was built as a statistical programming language and has a huge array of functions for statistical analysis. Listed below are commonly cited analyses in the biomedical science literature and their corresponding R function:
+
+-   Pearsons Chi-Sq - `chisq.test()`: A test to see if there is a significant correlation between categorical variables.
+-   Fishers exact - `fisher.test()`: A test to see if there is a significant correlation between categorical variables arranged in a 2x2 contingency table.
+-   Students T-Test - `t.test()`: A parametric test to compare the means of two groups
+-   Wilcoxon tests - `wilcox.test()`: A non-parametric test used to compare the medians of two groups
+-   Analysis of Variance (ANOVA) - `aov()`: This is a parametric test that will evaluate whether the are differences between the mean of \>2 groups
+-   Kruskal-Wallis rank sum test - `kruskal.test()`: This is an non-parametric test that compares the medians of \>2 groups
+-   Linear Regression - `lm()`: Test for correlation between two continous variables.
+
+::: examplebox
+**Example**
+
+In this example, I use the `aov` function to test whether there are differences in Petal.Width between `Species`, and the `lm` function to test whether there is an association between Petal.Width and Petal.Length using the `iris` data.
+
+```{r, eval=TRUE}
+data(iris)
+#aov(y~x, data)
+ANOVA_Petal.Width_Species <- aov(Petal.Width ~ Species, iris)
+#Summarise ANOVA results
+summary(ANOVA_Petal.Width_Species)
+#lm(y~x, data)
+LM_Petal.Width_Petal.Length <- lm(Petal.Length ~ Petal.Width, iris)
+#Summarise lm results
+summary(LM_Petal.Width_Petal.Length)
+```
+
+We can see that the Pr(\>F) and Pr(\>\|T\|) for the ANOVA and regression, which corresponds to the P value is much \< than 0.05, therefore there is a significant interaction between Species and Petal.Width, and Petal.Width and Petal.Length
+:::
+
+::: exercisebox
+**Exercise 8:**
+
+Perform a linear regression on the data used to generate the first plot in exercise 7 and an ANOVA on the data used to generate the second plot in the same exercise. Remember you will need to use both the relevent statistical function (see above), and the summary function. Comment on what the output means.
+
+```{r, R-Ex8, eval=TRUE, echo=TRUE}
+summary(lm(IPO8 ~ KRAS, expressionsubtype_mrna_dat))
+summary(aov(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat))
+```
+:::
+
+ccc
+
+------------------------------------------------------------------------
+
+## Part 3 - Bash
+
+### **Learning Objectives**:
+
+**At the conclusion of this workshop students should be able to:**
+
+-   Navigate the linux file system and execute directory management commands
+
+-   Apply pipes, filters and redirects to manipulate files in linux
+
+-   Construct basic for loops to parse lists of files through sets of commands
+
+**Prerequisites:** This section of the workshop assumes that students have access to PuTTY/Terminal, have successfully connected to your linux virtual machine, and reviewed the preclass lecture on Bash.
+
+**Important:** All code and associated explanations should be entered into the RMarkdown template provided for assessment.
+
+**Note:** The exercises in this workshop will be assessed, as such we will not be providing detailed solutions. Please work in small groups and make sure you gain the attention of a demonstrator if you are struggling with any exercise.
+
+------------------------------------------------------------------------
+
+### Navigation and file management on the command line
+
+We can navigate the command line and manage our directories using a series of different commands. When you initiate a shell session you will be located in your `home` directory, we can confirm this by using the `pwd` command. We can also list the files in our current directory using the `ls` program. If you are unfamilar with either of these programs, remember you can check out the documentation by entering `man pwd` or `man ls`.
+
+::: exercisebox
+**Exercise 1**
+
+-   Confirm that your current working directory is the your home directory.
+-   List the files in this directory.
+-   Compare the output of `ls` with `ls -all`. What additional information does ls -all provide?
+
+```{bash, bash-ex1, eval = FALSE, echo = TRUE}
+pwd
+ls
+ls -all
+```
+:::
+
+------------------------------------------------------------------------
+
+You probably noticed that there isn't too much in your home directory just yet! But lets go ahead and create a few directories and files for the purposes of this workshop. Recall that we can create new directories using the `mkdir` program and we can generate empty files using the `touch` command. We can move files with the `mv` command and copy them with the `cp` command.
+
+::: examplebox
+**Example**
+
+In this example, I have created a new directory called `my_first_directory` and created two new files called `file1.txt` and `file2.txt`. Using the `mv` command, `file1.txt` and `file2.txt` are moved to `my_first_directory`. We could have also made file1.txt and file2.txt directly in `my_first_directory` by either navigating to it, or by pointing to the sub-directory.
+
+```{bash, eval = FALSE}
+mkdir my_first_directory
+touch file1.txt file2.txt
+mv file1.txt file2.txt ./my_first_directory
+# Making files in sub directory
+touch my_first_directory/file1.txt my_first_directory/file2.txt 
+
+```
+:::
+
+::: exercisebox
+**Exercise 2**
+
+-   Make a directory called workshop_1
+-   Use the cd command to navigate to workshop_1
+-   Create a directory called data, scripts and results
+-   Within the scripts subdirectory, create an empty file called for_loop.sh for use later in the workshop
+
+```{bash, bash-ex2, eval = FALSE, echo = TRUE}
+mkdir workshop_1
+cd workshop_1
+mkdir data
+mkdir scripts
+mkdir results
+touch scripts/for_loop.sh
+```
+:::
+
+There are occasions where will want to remove files and directories. We use the `rm` command to remove files and the `rmdir` command to remove directories. **IMPORTANT: In linux there is no recycle bin! If you execute an rm command to remove a file this is not usually reversible, so you must use caution when removing files**.
+
+::: examplebox
+**Example**
+
+Here, I create a directory called temp and a file called temp.txt. I then use rmdir and rm to remove these files. As alluded to above, these commands are irrevocable.
+
+```{bash, eval = FALSE}
+mkdir temp
+touch temp.txt
+rmdir temp
+rm temp.txt
+```
+:::
+
+------------------------------------------------------------------------
+
+Another important feature of linux is the ability to create links to files. There are two types of links we can create, symbolic links (symlinks) and hard links. Symlinks act like shortcuts to the destination file, whereas hard links are a mirror of the linked file. In this sense, symlinks use substantially less disk space as the file merely contains the location of the file we are linking to. However, if the linked file is deleted, the symlink will no longer work. In contrast, hard links use more data but as they are a mirror of the linked file they will still work if the linked file is deleted. Thus there is a trade-off between 'forgivingness' of deletions and disk space.
+
+We generally rely on symlinks as these can point to directories and often the linked files are in a backed up portion of the server. For example, we might create a symlink to a reference genome that is stored elsewhere on the server.
+
+We can use the `ln` program to create these links. By default `ln` will create a hard link. The `-s` flag will tell the program to create a symlink.
+
+::: examplebox
+**Example**
+
+Here is an example of how to create a symbolic link to the root. We can remove a symbolic link using rm
+
+```{bash, eval = FALSE}
+ln -s / link_to_root
+rm link_to_root
+```
+:::
+
+::: exercisebox
+**Exercise 3**
+
+In the workshop_1 directory, create a symlink to your home directory. Remember the home directory is denoted by the `~` sign.
+
+```{bash, bash-ex3, eval = FALSE, echo = TRUE}
+ln -s ~ home
+```
+:::
+
+------------------------------------------------------------------------
+
+### Pipes, Redirects and Filters
+
+In the lecture materials, you were exposed to pipes, redirects and filters. These are powerful tools for stringing commands together, writing the output of commands to files, and altering outputs generated by programs. Let's start with a brief recap of redirects. You will recall that there are three streams in bash, Stdin, Stdout and Stderr.
+
+-   Stdin: This is the input provided to a command/program.
+-   Stdout: This is the default output of a command, usually returned to the terminal.
+-   Stderr: This is the error stream.
+
+There are several operators that we can use to redirect these streams
+
+-   Stdin can be redirected using the "\<" operator. This operator will allow us to provide a specific input to a command, this might be a file containing paths, for instance.
+-   Stdout can be redirected using the "\>" operator. You can use this operator to direct the Stdout to a file.
+-   Stderr can be redirected using the "2\>" operator. You can use this operator to direct Stderr to a file.
+
+::: examplebox
+**Example**
+
+In this example, I redirect Stdout of `ls -all` to a file called `list.txt`. I can then provide `list.txt` as Stdin for another program, in this example that is the `cat` program. As we progress through semester you will appreciate more useful applications of Stdin & Stdout redirects.
+
+```{bash, eval = FALSE}
+ls -all > list.txt
+cat < list.txt
+```
+:::
+
+::: exercisebox
+**Exercise 4**
+
+-   List the contents of the workshop_1 directory using the `-all` flag and redirect the output to a file.
+-   Using the `less` program, view the file
+-   Compare what has been written to file with the output of the same command without a redirect.
+
+```{bash, bash-ex4, eval = FALSE, echo = TRUE}
+ls -all > list_of_files.txt
+less list_of_files.txt
+ls - all
+```
+:::
+
+We can also pass Stdout from one command directly to Stdin of another. This is known as a pipe, and we do this using the `|` operator.
+
+::: examplebox
+**Example**
+
+Here is an example of the power of pipes. We begin by listing all the numbers between 1 and 20 using the `seq` command. We then pipe the output to `sort` to sort in reverse numeric order. This output is then piped to `grep` to select rows containing 1, and finally \_text is added to the end of each line (\$) using `sed`. All of this was achieved without writing the result to file
+
+```{bash, eval = FALSE}
+seq 20 | sort -rn | grep 1 | sed 's/$/_text/'
+```
+:::
+
+The example above is also an excellent example of various filters. Recall that filters will modify the stream. For example, sort took the Stdout from seq and modified it by sorting reverse numerically. Below is a non-exhaustive list of common filters and their application
+
+-   `grep`: This program will search for specific patterns/strings in data.
+-   `sed`: This program will find modify patterns and strings. Most commonly used for substitution.
+-   `sort`: This program will sort the input in a manner consistent with the flags provided to it.
+-   `wc`: Will count the number bytes, characters, words etc in an input.
+-   `awk`: Used to search, retrieve and manipulate data.
+
+::: exercisebox
+**Exercise 5**
+
+-   Use the seq program to generate all numbers between 1 and 1000
+-   Pipe the output to grep, and use grep to find all numbers that *do not* include the number 10 in them
+-   Pipe the output to sort and sort in reverse numerical order
+-   Pipe the output to sed and append your name to the end of each line
+
+```{bash, bash-ex5, eval = FALSE, echo = TRUE}
+seq 1000 | grep -v 10 | sort -rn | sed 's/$/lochie/'
+```
+:::
+
+------------------------------------------------------------------------
+
+### Loops
+
+There are many occasions in scripting where we want to perform the same function or set of functions on multiple files. We can do this by constructing a loop. In the eModule, we discussed three types of loops.
+
+-   `for` loops: These loops will continue cycling through a list of items, performing the same set of commands on each, until the list is exhausted. If there isn't a set number of items, the loop is said to be infitite and will continue until interrupted. We would use a for loop in bioinformatics to analyse several samples, or sets of reads.
+-   `while` loops: These loops will continue so long as a given condition is TRUE.
+-   `until` loops: These loops will continue so long as a given condition is FALSE.
+
+::: examplebox
+**Example**
+
+In this example, our loop will iterate over numbers 1 to 5 assigning each to the \$var variable as the loop starts a new iteration. Note the manner in which we provided numbers 1 to 5, this is an example of brace expansion, a feature of the bash shell. We could've written `for var in 1 2 3 4 5` however this is longer and less convenient. The body of the loop then executes the touch command, which we know will create an empty file. The result is five new files called `1.txt 2.txt 3.txt 4.txt 5.txt`.
+
+```{bash, eval = FALSE}
+#!/bin/bash
+for var in {1..5}
+do
+touch ${var}.txt
+done
+```
+
+You will also notice the `#!/bin/bash` line at the start of the file. This is called the shebang and points to the bash shell. This will make the script executable.
+:::
+
+::: exercisebox
+**Exercise 6**
+
+-   Using the [nano command line editor](https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/) open the for_loop.sh file that you created in your scripts directory
+-   Include a shebang as the first line of your script
+-   Write a for loop that iterate over numbers 1 to 10, assigning them to a variable called num
+-   In the body of the loop, use the echo command print the numbers are return them to the terminal
+-   Save your script (ctrl+O)
+-   Execute your script `sh for_loop.sh`
+-   Copy the script into your notebook.
+
+```{bash, bash-ex6, eval = FALSE, echo = TRUE}
+#!/bin/bash
+for num in {1..10}
+do
+echo ${num}
+done
+```
+:::
+
+We can also use for loops to iterate over a set of files and perform the same commands on each file. An example of when we might do this is when we are processing several sets of DNA sequencing reads. The first step is to conduct some quality control. If you have 10 files, it is much easier to construct a loop over these files than type each command individually.
+
+::: examplebox
+**Example**
+
+In this example, we iterate over all fastq files in the current working directory using the wildcard operator: `*.fastq`. We then search these fastq files for a the string `AGGTC` and write the lines containing this string to a file.
+
+```{bash, eval = FALSE}
+#!/bin/bash
+for file in ./*.fastq; do
+grep AGGTC $file > "./${file%.fastq}_AGGTC.fastq"
+done
+```
+
+I've written this to a file and appended AGGTC to the end of the file name. If we simply point our redirect to `.. > ${file}` we will have the fastq extension within our file name. `${file%.fastq}` on the other hand will keep everything except the extension, and therefore is useful when writing new files in loops.
+:::
+
+Now it's your turn, but first we need to transfer some data from our local computer to the virtual machine. We can transfer data to and from virtual machines using the `scp` command from either the terminal (Not connected to your VM) or the windows command line (after you have installed putty). **Note for windows**: you will use `pscp -scp` in every place you see a command with `scp` for example:
+
+`scp file.text user@hostname:/path/on/server/` will become `pscp -scp file.txt user@hostname:/path/on/sever`
+
+To transfer files to the VM:
+`scp file.text user@hostname:/path/on/server/`
+
+To transfer files from the VM to your PC:
+`scp username@hostname:/path/to/file local_destination`
+
+
+::: exercisebox
+**Exercise 7**
+
+-   In your data directory, execute the following commands to transfer the sample_1.fastq and sample_2.fastq files from your local computer to the VM.
+-   Using the [nano command line editor](https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/) create a new script called `loop2.sh` in your scripts directory
+-   Include a shebang as the first line of your script
+-   Write a script the will loop over the .fastq files in your data directory (Hint: use relative or absolute paths to point to this directory), identify all reads containing `ATTGCC` and sort them alphabetically.
+-   Write the output to files appended with `_ATTGCC_sort`
+
+```{bash, bash-ex7, eval = FALSE, echo = TRUE}
+#!/bin/bash
+for file in ../data/*.fastq; do
+grep ATTGCC $file | sort > "./${file%.fastq}_ATTGCC_sort.fastq"
+done
+```
+:::
+
+## Assessment 1
+
+### Assessment 1
+
+For assessment 1, students are to upload an RMarkdown notebooks pertaining to the in-class exercises and the out-of-class exercises. Please see Moodle for a more detailed explanation of this assessment item. [Click here for the RMarkdown assessment template](https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728)
+
+### In class component
+
+The exercises you complete in todays workshop are assessed as part of Assessment 1. You must include all the code you generate as part of the exercise and an explanation of what the code does in the RMarkdown template provided. All exercises are equally weighted.
+
+### Out of class component
+
+Students must complete the following exercises, including all code and descriptions in the RMarkdown template provided in the Assessment 1 folder on Moodle.
+
+**Bash activities (20% - 8 Marks)**
+
+-   Using the ls command, list all files in the current directory and use \> to redirect the standard output (Stdout) of ls to a file (2 Marks)
+-   Using the seq command, list all numbers between 0 and 100. Pipe ( \| ) the standard output to grep and extract numbers containing "2". Pipe Stdout to sed substitute, append an exclamation mark to the end of every line. The end of lines is denoted by "\$" in unix.
+-   Write an executable script that loops over a set of .fastq files your data directory (the fastq files provided in the worksho. Extract all reads that contain the string GGTGGT and write them to a new file with "\_AGGTC" appended to the end of the file name Hint: This will require a for loop and grep. When redirecting Stdout your variable will need to be contained in {}. (4 Marks)
+
+**R Activities (20% - 8 Marks)**
+
+-   Using the summary function, find the mean and median of every variable in the mtcars dataset. Use the str function to identify the data structure, number of variables, and datatypes contained within the dataset. (2 marks)
+-   Using the melt function from the data.table library, convert the mtcars data from wide to long format. Ensure that the rownames are maintained as a variable (Hint: Load the tidyverse library and consult the rownames_to_columns function) (2 marks)
+-   Using the boxplot function, construct a boxplot that visualises the relationship between cyl and mpg. Relabel the axis with more meaningful titles (ie. Miles per gallon, cylinder) (2 marks)
+-   Use the aov function to perform an ANOVA to test if there is a relationship between cyl and mpg (2 marks)
+
+**RMarkdown formatting Activities (15% - 6 Marks)**
+
+-   Add a code chunk to your notebook, modify the settings of the code chunk to set eval to false. Write any basic R code in the code chunk. (2 marks)
+-   Write a paragraph describing your motivation to study genome analytics. You paragraph should contain a title with a different sized header when compared with the text of the paragraph. Include a photograph that best captures your motivation, with a link to the source of the photograph (4 Marks).

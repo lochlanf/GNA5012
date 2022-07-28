@@ -1,5 +1,5 @@
 ---
-title: "Workshop 1"
+title: "Workshop 1 - Introduction to R and Bash"
 output: 
   html_document: 
     theme: yeti
@@ -37,7 +37,15 @@ In this course we will make extensive use of cloud computing and virtual machine
 
 #### Accessing virtual machines using PuTTY
 
+If you are using Windows you will access your virtual machines using PuTTY. 
+
+![PuTTY](https://www.ssh.com/hubfs/Imported_Blog_Media/Initial_Window_with_Configuration__Host_Name__and_Profiles-2.png)
+
+In the hostname (or IP address) box, enter the hostname that you were provided. Ensure the connection type is SSH. Click open. You will be prompted to enter your username and password in the terminal window. Enter your credentials and click enter. Note you will not see the characters as they are typed. You are now in your home directory on the VM.
+
 #### Accessing virtual machines using the terminal app
+
+To access your VM using the terminal app on Mac, search for the terminal app using the search bar in the top right hand corner of your computer. Type the following command `ssh username@hostname` where username is the username you were provided and hostname is the hostname provided. Click enter, you will be asked for a password. Enter the password provided and click enter. Note you will not see the characters as they are typed. You are now in your home directory on the VM.
 
 #### The Monash VPN
 
@@ -57,7 +65,7 @@ Due to security constraints, our virtual machines can only be accessed from with
 
 **Prerequisites:** This section of the workshop assumes that students have successfully installed R Studio, and reviewed the preclass lecture on R.
 
-**Important:** Remember to include all your code as code chunks in your RMarkdown document, with text describing what your code does. This will be assessed. Please grab a demonstrator if you are still unsure how to do this.
+**Important:** All code and associated explanations should be entered into the RMarkdown template provided for assessment. You can find the template 
 
 **Note:** The exercises in this workshop will be assessed, as such we will not be providing detailed solutions. Please work in small groups and make sure you gain the attention of a demonstrator if you are struggling with any exercise.
 
@@ -65,7 +73,7 @@ Due to security constraints, our virtual machines can only be accessed from with
 
 ### Creating a project in R
 
-RStudio allows users to create R projects, each of which will have their own working directory, environment and history. Let's start by making an R project for this workshop in a new directory and creating an RMarkdown document. Your instructor will walk you through this process and give you a brief overview of the graphical RMarkdown editor.
+RStudio allows users to create R projects, each of which will have their own working directory, environment and history. Let's start by making an R project for this workshop in a new directory and creating an RMarkdown document. Your instructor will walk you through this process and give you a brief overview of the graphical RMarkdown editor. You will then load the RMarkdown template document which you will use to enter your code and explanations. [Click here for the RMarkdown assessment template](https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728)
 
 ------------------------------------------------------------------------
 
@@ -87,7 +95,9 @@ example <- read.table("example.csv", header = TRUE, sep=",")
 :::
 
 ::: exercisebox
-**Exercise 1:** Download the workshop data from the GNA5012 moodle site to a subdirectory of your R Project working directory called `data`. Load the `Workshop1` data files, note the file extension and that the first row contains the header. Read it into your R environment as a variables called `clin_dat_1, mrna_dat`.
+**Exercise 1:** 
+
+Download the workshop data from the GNA5012 moodle site to a subdirectory of your R Project working directory called `data`. Load the `Workshop1_clinical_dat.txt` and `Workshop1_mrna_dat.txt` data files, note the file extension and that the first row contains the header. Read it into your R environment as a variables called `clin_dat_1, mrna_dat`.
 
 These files are derived from [The Cancer Genome Atlas](https://www.cancer.gov/about-nci/organization/ccg/research/structural-genomics/tcga) project. This project performed comprehensive genomic profiling on thousands of patient samples to improve our understanding the aetiology and biology of cancer. The consortia first published these data \~ 10 years ago, and simultaneously released the data to the research community. This was a major advance in cancer genomics and has facilitated several major discoveries. We are using data from the COADREAD subarm, which corresponds to data from patients with colorectal cancers.
 :::
@@ -123,7 +133,9 @@ Here we can see that the iris data structure is a data.frame. Columns 1:4 contai
 :::
 
 ::: exercisebox
-**Exercise 2:** Use the `str` function to identify the underlying structure, data types, number of observations and number of variables our workshop data. Comment on the key characteristics of the data structure and data types (refer to lecture notes). **Note** the mrna_dat data has 19490 variables, find the data type of the first five variables. Subset the data using square brackets `str(mrna_dat[1:5,1:5)` as indicated in the lecture materials.
+**Exercise 2:** 
+
+Use the `str` function to identify the underlying structure, data types, number of observations and number of variables our workshop data. Comment on the key characteristics of the data structure and data types (refer to lecture notes). **Note** the mrna_dat data has 19490 variables, find the data type of the first five variables. Subset the data using square brackets `str(mrna_dat[1:5,1:5)` as indicated in the lecture materials.
 :::
 
 ```{r R-Ex2, echo=FALSE, eval=TRUE}
@@ -146,7 +158,9 @@ is.factor(iris$Species)
 :::
 
 ::: exercisebox
-**Exercise 3:** Coerce the `EXPRESSION_SUBTYPE` and `METHYLATION_SUBTYPE` variables in the `clin_dat_1` dataframe to factors. Confirm that the variables have been successfully coerced using the `is.factor` function.
+**Exercise 3:** 
+
+Coerce the `EXPRESSION_SUBTYPE` and `METHYLATION_SUBTYPE` variables in the `clin_dat_1` dataframe to factors. Confirm that the variables have been successfully coerced using the `is.factor` function.
 
 What are the characteristics of this data type? In your notebook, write a brief summary of all basic data types in R.
 :::
@@ -169,7 +183,9 @@ summary(iris)
 ```
 
 ::: exercisebox
-**Exercise 4:** Summarise the `clin_dat_1` dataframe. What do you notice about the output for each data type?
+**Exercise 4:** 
+
+Summarise the `clin_dat_1` dataframe. What do you notice about the output for each data type?
 :::
 
 ------------------------------------------------------------------------
@@ -212,7 +228,9 @@ Here, we have subsetted species fromn the iris data. Note how select maintains t
 :::
 
 ::: exercisebox
-**Exercise 5:** Subset PATIENT_ID, SAMPLE_ID and EXPRESSION_SUBTYPE from the clin_dat_1 dataframe using any of the above methods. Assign them to new variables and construct a dataframe from these variables using the `data.frame` function, and assign this to a variable. **Note:** Dplyr::select is the most efficient way of completing this task
+**Exercise 5:** 
+
+Subset PATIENT_ID, SAMPLE_ID and EXPRESSION_SUBTYPE from the clin_dat_1 dataframe using any of the above methods. Assign them to new variables and construct a dataframe from these variables using the `data.frame` function, and assign this to a variable. **Note:** Dplyr::select is the most efficient way of completing this task
 
 ```{r, R-Ex5, eval=TRUE, echo=FALSE}
 PATIENT_ID <- clin_dat_1$PATIENT_ID
@@ -254,7 +272,9 @@ ncol(complete_dat)
 :::
 
 ::: exercisebox
-**Exercise 6:** Join your `clin_subset` and `mrna_dat` dataframes by the `SAMPLE_ID` identifier. Assign this to the variable `expressionsubtype_mrna_dat`. Comment on the number of rows and columns
+**Exercise 6:** 
+
+Join your `clin_subset` and `mrna_dat` dataframes by the `SAMPLE_ID` identifier. Assign this to the variable `expressionsubtype_mrna_dat`. Comment on the number of rows and columns
 
 ```{r, R-Ex6, eval=TRUE, echo=FALSE}
 expressionsubtype_mrna_dat <- inner_join(clin_subset, mrna_dat,
@@ -357,6 +377,7 @@ You might have noticed that there was an some indication that there were relatio
 
 ::: examplebox
 **Example**
+
 In this example, I use the `aov` function to test whether there are differences in Petal.Width between  `Species`, and the `lm` function to test whether there is an association between Petal.Width and Petal.Length using the `iris` data.
 
 ```{r, eval=TRUE}
@@ -375,9 +396,11 @@ We can see that the Pr(>F) and Pr(>|T|) for the ANOVA and regression, which corr
 :::
 
 ::: exercisebox
-**Exercise 8:** Perform a linear regression on the data used to generate the first plot in exercise 7 and an ANOVA on the data used to generate the second plot in the same exercise. Remember you will need to use both the relevent statistical function (see above), and the summary function. Comment on what the output means. 
+**Exercise 8:** 
 
-```{r, R-Ex8, eval=TRUE, echo=FALSE}
+Perform a linear regression on the data used to generate the first plot in exercise 7 and an ANOVA on the data used to generate the second plot in the same exercise. Remember you will need to use both the relevent statistical function (see above), and the summary function. Comment on what the output means. 
+
+```{r, R-Ex8, eval=FALSE, echo=FALSE}
 summary(lm(IPO8 ~ KRAS, expressionsubtype_mrna_dat))
 summary(aov(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat))
 ```
@@ -400,7 +423,7 @@ ccc
 
 **Prerequisites:** This section of the workshop assumes that students have access to PuTTY/Terminal, have successfully connected to your linux virtual machine, and reviewed the preclass lecture on Bash.
 
-**Important:** Remember to include all your code as code chunks in your RMarkdown document, with text describing what your code does. This will be assessed. Please grab a demonstrator if you are still unsure how to do this.
+**Important:** All code and associated explanations should be entered into the RMarkdown template provided for assessment.
 
 **Note:** The exercises in this workshop will be assessed, as such we will not be providing detailed solutions. Please work in small groups and make sure you gain the attention of a demonstrator if you are struggling with any exercise.
 
@@ -638,10 +661,20 @@ done
 I've written this to a file and appended AGGTC to the end of the file name. If we simply point our redirect to `.. > ${file}` we will have the fastq extension within our file name. `${file%.fastq}` on the other hand will keep everything except the extension, and therefore is useful when writing new files in loops.
 :::
 
+Now it's your turn, but first we need to transfer some data from our local computer to the virtual machine. We can transfer data to and from virtual machines using the `scp` command from either the terminal (Not connected to your VM) or the windows command line (after you have installed putty). **Note for windows**: you will use `pscp -scp` in every place you see a command with `scp` for example:
+
+`scp file.text user@hostname:/path/on/server/` will become `pscp -scp file.txt user@hostname:/path/on/sever`
+
+- To transfer files to the VM:
+`scp file.text user@hostname:/path/on/server/`
+
+- To transfer files from the VM to your PC:
+`scp username@hostname:/path/to/file local_destination`
+
 ::: exercisebox
 **Exercise 7**
 
-- Execute the following command in your data directory `wget INSERT_LINK_HERE`. This will download some fastq data.
+- Upload the sample_1.fastq and sample_2.fastq files from your data directory on your local computer to your VM using the `scp` program.
 - Using the [nano command line editor](https://www.howtogeek.com/howto/42980/the-beginners-guide-to-nano-the-linux-command-line-text-editor/) create a new script called `loop2.sh` in your scripts directory
 - Include a shebang as the first line of your script
 - Write a script the will loop over the .fastq files in your data directory (Hint: use relative or absolute paths to point to this directory), identify all reads containing `ATTGCC` and sort them alphabetically.
@@ -656,5 +689,35 @@ done
 :::
 
 ## Assessment 1
+
+### Assessment 1
+
+For assessment 1, students are to upload an RMarkdown notebooks pertaining to the in-class exercises and the out-of-class exercises. Please see Moodle for a more detailed explanation of this assessment item. [Click here for the RMarkdown assessment template](https://lms.monash.edu/pluginfile.php/15051299/mod_page/content/5/Assessment%20Template.Rmd?time=1658985890728)
+
+### In class component
+
+The exercises you complete in todays workshop are assessed as part of Assessment 1. You must include all the code you generate as part of the exercise and an explanation of what the code does in the RMarkdown template provided. All exercises are equally weighted.
+
+### Out of class component
+
+Students must complete the following exercises, including all code and descriptions in the RMarkdown template provided in the Assessment 1 folder on Moodle.
+
+**Bash activities (20% - 8 Marks)**
+
+- Using the ls command, list all files in the current directory and use > to redirect the standard output (Stdout) of ls to a file (2 Marks)
+- Using the seq command, list all numbers between 0 and 100. Pipe ( | ) the standard output to grep and extract numbers containing “2”. Pipe Stdout to sed substitute,  append an exclamation mark to the end of every line. The end of lines is denoted by “$” in unix.
+- Write an executable script that loops over a set of .fastq files your data directory (the fastq files provided in the worksho. Extract all reads that contain the string GGTGGT and write them to a new file with “_AGGTC” appended to the end of the file name Hint: This will require a for loop and grep. When redirecting Stdout your variable will need to be contained in {}. (4 Marks)
+
+**R Activities (20% - 8 Marks)**
+
+- Using the summary function, find the mean and median of every variable in the mtcars dataset. Use the str function to identify the data structure, number of variables, and datatypes contained within the dataset. (2 marks)
+- Using the melt function from the data.table library, convert the mtcars data from wide to long format. Ensure that the rownames are maintained as a variable (Hint: Load the tidyverse library and consult the rownames_to_columns function) (2 marks)
+- Using the boxplot function, construct a boxplot that visualises the relationship between cyl and mpg. Relabel the axis with more meaningful titles (ie. Miles per gallon, cylinder) (2 marks)
+- Use the aov function to perform an ANOVA to test if there is a relationship between cyl and mpg (2 marks)
+
+**RMarkdown formatting Activities (15% - 6 Marks)**
+
+- Add a code chunk to your notebook, modify the settings of the code chunk to set eval to false. Write any basic R code in the code chunk. (2 marks)
+- Write a paragraph describing your motivation to study genome analytics. You paragraph should contain a title with a different sized header when compared with the text of the paragraph. Include a photograph that best captures your motivation, with a link to the source of the photograph (4 Marks).
 
 
