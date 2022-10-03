@@ -1,0 +1,86 @@
+---
+title: "Workshop 8 - Complex variant calling"
+output: 
+  html_document: 
+    theme: yeti
+---
+
+```{css, echo=FALSE}
+.exercisebox {
+  padding: 1em;
+  background: #ffffcc;
+  color: black;
+  border: 2px #ffffcc;
+  border-radius: 10px;
+}
+
+.examplebox {
+  padding: 1em;
+  background: #e6ffff;
+  color: black;
+  border: 2px #e6ffff;
+  border-radius: 10px;
+}
+
+.center {
+  text-align: center;
+
+```
+
+#  {.tabset}
+
+## Part 1 - Intra-Sample Contamination
+
+### Intra-sample Contamination
+
+::: exercisebox
+**Exercise 1**
+
+:::
+
+::: examplebox
+**Example**
+
+:::
+
+## Part 2 - Inter-sample Contamination
+
+### Inter-sample Contamination
+
+::: exercisebox
+**Exercise 1**
+
+:::
+
+::: examplebox
+**Example**
+
+:::
+
+## Part 3 - Inter-species contamination
+
+### Inter-species contamination
+
+::: exercisebox
+**Exercise 1**
+
+:::
+
+::: examplebox
+**Example**
+
+:::
+
+## Part 4 - Diagnosing issues from QC reports
+
+### Diagnosing issues from QC reports
+
+::: exercisebox
+**Exercise 1**
+
+:::
+
+::: examplebox
+**Example**
+
+:::

@@ -1,155 +1,259 @@
 ---
-title: "Assessment 1 - NAME"
+title: "Assessment 1 - Lochlan Fennell"
 output: 
   html_document: 
     theme: yeti
 ---
+
 #  {.tabset}
 
 ## R exercises - In class
 
 ### Exercise 1
-Code description
+
+In this exercise, I have read two files into the R environment using the read.table function. I have set `sep = "\t"` to indicate that the file is tab delimited, and `header = TRUE` to indicate that the first row is the column names. I have assigned these to variables using the \<- operator.
+
 ```{r R-Ex1, echo=TRUE, eval=TRUE}
-print("Code")
+clin_dat_1 <- read.table(file = "./data/Workshop1_clinical_dat1.txt",
+                         sep = "\t", 
+                         header=TRUE)
+mrna_dat <- read.table(file = "./data/Workshop1_mrna_dat.txt",
+                         sep = "\t", 
+                         header=TRUE)
 ```
 
 ### Exercise 2
-Code description
+
+Using the str function, I have evaluated the structure of the clin_dat_1 and mrna_dat dataframes. Note that I have only evaluated the first five variables in mrna_dat due to the size of the dataframe. clin_dat_1 is a dataframe consisting of character, integer and numeric data types; mrna_dat is a dataframe consisting of a single character data type and variables containing numeric data.
+
 ```{r R-Ex2, echo=TRUE, eval=TRUE}
-print("Code")
+str(clin_dat_1)
+str(mrna_dat[1:5,1:5])
 ```
 
 ### Exercise 3
-Code description
+
+For this exercise I have coerced METHYLATION_SUBTYPE and EXPRESSION_SUBTYPE variables from characters to factors. I have confirmed that this was successful using the is.factor function. Factors are advantageous compared to character data types as they contain levels and labels that allows for categorisation.
+
+Character -- stores strings of alphanumeric and special characters Double -- Store numeric data. Is the default for any numeric data that isn't specifically loaded as an integer Integer -- Stores whole number data that is specifically loaded as an integer (L suffix to number, or coerced) Logical -- Stores TRUE/FALSE data Complex -- Stores complex numbers that are comprised of a number with an imaginary component. Seldom used, but can be useful for solving algebraic expressions Raw - holds raw bytes, very rarely used
+
 ```{r R-Ex3, echo=TRUE, eval=TRUE}
-print("Code")
+clin_dat_1$METHYLATION_SUBTYPE <- as.factor(clin_dat_1$METHYLATION_SUBTYPE)
+is.factor(clin_dat_1$METHYLATION_SUBTYPE)
+clin_dat_1$EXPRESSION_SUBTYPE <- as.factor(clin_dat_1$EXPRESSION_SUBTYPE)
+is.factor(clin_dat_1$EXPRESSION_SUBTYPE)
 ```
 
 ### Exercise 4
-Code description
+
+I am using the summary function to generate summary statistics for the clin_dat_1 dataframe. I note that this function will generate the min, mean, median, max for all numeric/integer variables, will provide counts for factor levels and will not provide meaningful data for character variables. This shows the utility of factor variables when dealing with categories.
+
 ```{r R-Ex4, echo=TRUE, eval=TRUE}
-print("Code")
+summary(clin_dat_1)
 ```
 
 ### Exercise 5
-Code description
+
+Here I have subset three variables from the clin_dat_1 dataframe using native R and also using the tidyverse package. The tidyverse package is not included in base R. I have previously installed it, and am now loading it using `library`. These variables are assigned to a new variable called clin_subset.
+
 ```{r R-Ex5, echo=TRUE, eval=TRUE}
-print("Code")
+PATIENT_ID <- clin_dat_1$PATIENT_ID
+SAMPLE_ID <- clin_dat_1$SAMPLE_ID
+EXPRESSION_SUBTYPE <-clin_dat_1$EXPRESSION_SUBTYPE
+clin_subset <- data.frame(PATIENT_ID, SAMPLE_ID, EXPRESSION_SUBTYPE)
+
+##OR##
+library(tidyverse)
+clin_subset <- select(clin_dat_1, PATIENT_ID, SAMPLE_ID, EXPRESSION_SUBTYPE)
 ```
 
 ### Exercise 6
-Code description
+
+I am joining the clin_subset and mrna_dat dataframes with common identifiers (SAMPLE_ID) using the inner_join function. The inner_join function will join the dataframes where there is a match between SAMPLE_ID in both data.
+
 ```{r R-Ex6, echo=TRUE, eval=TRUE}
-print("Code")
+expressionsubtype_mrna_dat <- inner_join(clin_subset, mrna_dat,
+                                         by = "SAMPLE_ID")
 ```
 
 ### Exercise 7
-Code description
+
+Using the expressionsubtype_mrna_dat data frame, I have constructed two plots. The first is a scatterplot of KRAS and IPO expression. I have labeled the axis with units (FPKM) using the xlab and ylab flags. This figure indicates a moderate positive correlation between KRAS expression and IPO8 expression. The second plot is a boxplot of KRAS expression by Expression subtypes. There appears to be a difference in the mean KRAS expression between the groups. I have labeled the axis with units (FPKM) for KRAS using the ylab flag.
+
 ```{r R-Ex7, echo=TRUE, eval=TRUE}
-print("Code")
+plot(IPO8 ~ KRAS, expressionsubtype_mrna_dat, xlab = "KRAS Expression (FPKM)", ylab = "IPO8 Expression (FPKM)")
+boxplot(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat, xlab = "Expression Subtype", ylab = "KRAS Expression (FPKM)")
 ```
 
 ### Exercise 8
-Code description
+
+To further assess these relationships I have conducted two statistical tests. The first is a linear regression using the `lm` function. I have nested this within summary() to generate the P values and other statistics. This analysis suggests that there is a statistically significant correlation between KRAS and IPO8 expression. I tested for differences between mean KRAS expression by expression subtype using an ANOVA (the `aov` function). This analysis suggests a significant difference between the means KRAS expression between each group.
+
 ```{r R-Ex8, echo=TRUE, eval=TRUE}
-print("Code")
+summary(lm(IPO8 ~ KRAS, expressionsubtype_mrna_dat))
+summary(aov(KRAS ~ EXPRESSION_SUBTYPE, expressionsubtype_mrna_dat))
 ```
 
 ## Bash exercises - In class
 
 ### Exercise 1
-Code description
+
+Here, I print the current working directory. This tells me where I am in the file system. I then list files with ls and ls -all. ls -all shows more details, including hidden files, permissions and modified date.
+
 ```{bash, Bash-ex1, echo=TRUE, eval=FALSE}
-echo code
+pwd
+ls
+ls -all
 ```
 
 ### Exercise 2
-Code description
+
+This code is to set up my workshop directories. I make the main directory using mkdir, then make three subdirectories for data, scripts and results. Using touch, I make an empty file called for_loop.sh. I will populate this file in a later exercise.
+
 ```{bash, Bash-ex2, echo=TRUE, eval=FALSE}
-echo code
+mkdir workshop_1
+cd workshop_1
+mkdir data
+mkdir scripts
+mkdir results
+touch scripts/for_loop.sh
 ```
 
 ### Exercise 3
-Code description
+
+In this exercise I create a symbolic link to the home directory. This acts as a "shortcut" and can be navigated to.
+
 ```{bash, Bash-ex3, echo=TRUE, eval=FALSE}
-echo code
+ln -s ~ home
 ```
 
 ### Exercise 4
-Code description
+
+Here, I redirect the output of ls -all to list_of_files.txt and view the file with less. When stdout is returned to the terminal, there is highlighting that indicates file types. This is a bash function that is lost when you redirect the output to a file.
+
 ```{bash, Bash-ex4, echo=TRUE, eval=FALSE}
-echo code
+ls -all > list_of_files.txt
+less list_of_files.txt
+ls - all
 ```
 
 ### Exercise 5
-Code description
+
+In this exercise, I use seq to generate numbers up to 1000. I pipe the output to grep, performing an inverse grep to remove numbers containing '10'. This output is piped to sort, and sorted in reverse numeric order. Using sed, I substitute the end of the line (denoted by \$) for my name.
+
 ```{bash, Bash-ex5, echo=TRUE, eval=FALSE}
-echo code
+seq 1000 | grep -v 10 | sort -rn | sed 's/$/lochie/'
 ```
 
 ### Exercise 6
-Code description
+
+Here, I create a loop. I first open vim, a command line editor. Using vim, I create a script that begins with a shebang. This shebang contains the absolute path to the bash interpreter, and has benefits including making the script executable. I then create a for loop, using the variable 'num' and iterating over numbers 1 to 10 using brace expansion. The contents of the loop (after do and before done) contain instructions to echo the item which will print it and return it to the terminal.
+
 ```{bash, Bash-ex6, echo=TRUE, eval=FALSE}
-echo code
+#!/bin/bash
+for num in {1..10}
+do
+echo ${num}
+done
 ```
 
 ### Exercise 7
-Code description
+
+Here, I create a for loop to iterate over all the fastq files in the ../data/ directory using the \* wildcard. The contents of the loop will leverage grep to find all lines containing ATTGCC, and pipe the output to sort to sort the reads. The output of sort is redirected to a file with named with the original file name + `ATTGCC_sort` appended to it.
+
 ```{bash, Bash-ex7, echo=TRUE, eval=FALSE}
-echo code
+#!/bin/bash
+for file in ../data/*.fastq; do
+grep ATTGCC $file | sort > "./${file%.fastq}_ATTGCC_sort.fastq"
+done
 ```
 
 ## R exercises - Out of class
 
 ### Exercise 1
-Code description
+
+Here, I load the inbuilt mtcars data using the `data` function, generate a summary of the dataframe, and evaluate the structure of the data.
+
 ```{r R-OOC-Ex1, echo=TRUE, eval=TRUE}
-print("Code")
+data(mtcars)
+summary(mtcars)
+str(mtcars)
 ```
 
 ### Exercise 2
-Code description
+
+In this exercise, I need to convert my data from wide to long format. I can use the melt function to achieve this. I load the tidyverse and data.table packages. I then convert the rownames in mtcars to a column called Car. This is important because melt doesn't maintain rownames. I then use melt and as.data.table to melt mtcars, with id.vars set to car.
+
 ```{r R-OOC-Ex2, echo=TRUE, eval=TRUE}
-print("Code")
+library(tidyverse)
+library(data.table)
+data(mtcars)
+mtcars <- rownames_to_column(mtcars, var = "Car")
+mtcars <- melt(as.data.table(mtcars), id.vars = "Car")
+head(mtcars)
 ```
 
 ### Exercise 3
-Code description
+
+Here, I construct a boxplot using the boxplot function. I have relabelled the x and y axis using xlab and ylab.
+
 ```{r R-OOC-Ex3, echo=TRUE, eval=TRUE}
-print("Code")
+data(mtcars)
+boxplot(mpg ~ cyl, data = mtcars, xlab = "Cylinders", ylab ="Miles per gallon")
 ```
 
 ### Exercise 4
-Code description
+
+In order to establish whether there is a statistical association between mpg and cyl, I have conducted an ANOVA using the aov function. I nest this in summary to access the P values and other statistics from the model.
+
 ```{r R-OOC-Ex4, echo=TRUE, eval=TRUE}
-print("Code")
+summary(aov(mpg ~ cyl, data = mtcars))
 ```
 
 ## Bash exercises - Out of class
 
 ### Exercise 1
-Code description
+
+Here, I have listed the contents of my current directory (including hidden files) using ls -all. I have redirected the output to ls_output.txt
+
 ```{bash, Bash-OOC-ex1, echo=TRUE, eval=FALSE}
-echo code
+ls -all > ls_output.txt
 ```
 
 ### Exercise 2
-Code description
+
+In this exercise I have used seq to generate numbers to 100, piping the output to grep to find lines containing a 2, and used sed substitute to replace the end of each line with a !.
+
 ```{bash, Bash-OOC-ex2, echo=TRUE, eval=FALSE}
-echo code
+seq 100 | grep 2 | sed 's/$/!/'
 ```
 
 ### Exercise 3
-Code description
+
+Here, I create a for loop to iterate over all the fastq files in the ../data/ directory using the \* wildcard. The contents of the loop will leverage grep to find all lines containing GGTGGT and redirect the output to a file with named with the original file name + `AGGTC_sort` appended to it.
+
 ```{bash, Bash-OOC-ex3, echo=TRUE, eval=FALSE}
-echo code
+for file in ../data/*.fastq; do
+grep GGTGGT $file | sort > "./${file%.fastq}_AGGTC_sort.fastq"
+done
 ```
 
 ## R Markdown exercise
 
 ### Exercise 1
-Code description
+
+Insert code chunk and write any code in it
+
+```{r}
+print("Hello world")
+```
 
 ### Exercise 2
-Code description
+
+#### Motivation to study Genome Analytics
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse condimentum nunc ac sapien finibus malesuada. Aliquam ornare aliquet feugiat. Aenean suscipit, tellus vestibulum laoreet facilisis, dui tellus sodales mi, sed volutpat lectus neque ornare nisi. Aenean dolor nisl, porttitor in urna iaculis, maximus mollis justo. Phasellus a nisl metus. Curabitur.
+
+![](https://static.euronews.com/articles/stories/06/58/32/04/1100x619_cmsv2_34d1f2bc-eee1-5942-977f-0a595beed8b8-6583204.jpg)
+
+[Link to source](https://www.euronews.com/next/2022/04/01/scientists-finally-sequence-the-whole-human-genome-full-dna-could-help-improve-healthcare)

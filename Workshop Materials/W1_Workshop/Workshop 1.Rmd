@@ -35,6 +35,10 @@ output:
 
 In this course we will make extensive use of cloud computing and virtual machines. You have been provided credentials that will allow you to access these virtual machines 24/7. To access any remote server, we use the terminal and the `ssh` command. If you are on a mac or linux based PC, you will have terminal in-built. If you are on a windows-based PC, please download [PuTTY](https://the.earth.li/~sgtatham/putty/latest/w32/putty.exe).
 
+To sign up for a VM please enter your name next to a line in this Google Doc: https://docs.google.com/spreadsheets/d/1H9k6jPfAR96m_0iKUA_sbLZEUzDmlME8yHlfLmAKTow/edit?usp=sharing
+
+**Note**: You cannot share a VM, please jot down your virtual machine credentials. 
+
 #### Accessing virtual machines using PuTTY
 
 If you are using Windows you will access your virtual machines using PuTTY. 

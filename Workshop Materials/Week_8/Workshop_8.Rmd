@@ -1,0 +1,246 @@
+---
+title: "Workshop 8 - Complex variant calling"
+output: 
+  html_document: 
+    theme: yeti
+---
+
+```{css, echo=FALSE}
+.exercisebox {
+  padding: 1em;
+  background: #ffffcc;
+  color: black;
+  border: 2px #ffffcc;
+  border-radius: 10px;
+}
+
+.examplebox {
+  padding: 1em;
+  background: #e6ffff;
+  color: black;
+  border: 2px #e6ffff;
+  border-radius: 10px;
+}
+
+.center {
+  text-align: center;
+
+```
+
+#  {.tabset}
+
+## Part 1 - The Genome in a Bottle Consortium
+
+### The Genome in a Bottle Project
+
+The Genome in a Bottle project is a public-private research initiative that commenced in August 2012. The aims of this project were simple but incredibly challenging: To produce a high-quality reference standards for benchmarking variant calling pipelines. The consortia used various sequencing techniques and analytical methods to produce high-quality variant calls which represent gold-standards for benchmarking pipelines.
+
+::: exercisebox
+**Exercise 1**
+
+In small groups, explore the sequencing modalities used to analyse the genome of NA12878. You can find a description of the data [here](https://github.com/genome-in-a-bottle/giab_data_indexes). Each member of your group should research one sequencing modality. As a group, briefly comment on why you think each technology adds value to the project. Record your responses in the [padlet](https://lms.monash.edu/mod/page/view.php?id=10856867) (note: choose a group name and include it in the subject!)
+:::
+
+The GIAB consortium have made all of the data generated as part of the project publicly accessible. The sample we are analysing today pertains to DNA from individual NA12878. We are looking at exome capture sequencing data generated at the Garvan Institute in Sydney.
+
+::: exercisebox
+**Exercise 2**
+
+-   Navigate to the week_8 directory found in \~
+
+-   Using the `wget` command, download the README file from
+
+    ```{r, eval=FALSE}
+    https://ftp-trace.ncbi.nlm.nih.gov/ReferenceSamples/giab/data/NA12878/Garvan_NA12878_HG001_HiSeq_Exome/Garvan_NA12878_HG001_HiSeq_Exome.README
+    ```
+
+-   This file describes the sequencing method and analytical approach GIAB took.
+
+-   **Note**: Disregard the analysis steps, we re-analysed these data and aligned to GRCh38.
+:::
+
+## Part 2 - QC
+
+### Quality control and preprocessing
+
+We have provided you a GATK4 compliant preprocessed BAM file. In this section of the workshop, you will use your knowledge of various tools to evaluate the read quality within the BAM, mapping statistics and coverage statistics.
+
+::: exercisebox
+**Exercise 2**
+
+-   Create two new directories called output and src. You will store results and scripts in these folders.
+
+-   Write a loop that will iterate over all bam files in the `~/data/SR_Exome` directory (I know there is only one bam file, but your script could be used for many more!) and:
+
+    -   Use `fastqc` to generate reports for the reads in the bam files and store them in your `output` directory.
+
+    -   Use `samtools view` to write out the header of the BAM files.
+
+    -   Use `samtools flagstat` to evaluate the mapping statistics of the bam file. Redirect the output in to file in the `output` directory.
+
+-   Discuss in your group what each of the parameters indicate. Is there any additional QC you might have done? Pop them in the padlet.
+:::
+
+We've spent some time this semester discussing GATK and best practises. In weeks 2-4 you conducted a simple variant calling analysis using GATK best practises from start to finish. Here, although we are going to use a different variant caller, we are adhering to GATK best practise for preprocessing our reads and aligning them to the genome.
+
+::: exercisebox
+**Exercise 3**
+
+In small groups, discuss GATK best practises to produce an analysis read BAM file. Discuss why these steps are included and how important they are. You will find this information on the GATK website. Record these discussions with a brief note for your group in the padlet.
+:::
+
+## Part 3 - SNVs and Small indels with Strelka2
+
+### Configuring Strelka2 runs
+
+We are going to take our analysis ready bam file and call SNV and using Strelka2. Running strelka2 is a two step process. First, we must use a configuration script to set the stage for the analysis and then we need to execute the workflow. Below is an example of a configuration script.
+
+::: examplebox
+**Example**
+
+```{bash, eval=FALSE}
+#!/bin/bash
+BAM_FILE_PATH="PATH_TO_BAM"
+REFERENCE="PATH_TO_REFERENCE"
+OUTPUT="~/week_8/output/strelka2/"
+
+/usr/local/strelka/bin/configureStrelkaGermlineWorkflow.py \
+--bam $BAM_FILE_PATH \
+--referenceFasta $REFERENCE \
+--runDir $OUTPUT \
+--exome
+```
+:::
+
+::: exercisebox
+**Exercise 4:**
+
+-   Using the template above, create a bash script in the src directory to analyse the `bam` file in data/SR_Exome. Make sure you alter the variables to point to your files.
+
+-   This will create files in your `output/strelka2`
+:::
+
+### Executing Strelka2
+
+Strelka2 is executed using the `runWorkflow.py` script, which will be created in the `output/strelka2` directory. We need to specify a few options to make sure the script runs smoothly. First we need to specify that we will be running the workflow locally, rather than on some compute cluster or cloud. We can use the `-m local` flag to specify this. We also need to specify how many cores we want the script to use using the `-j` option. Lets set `-j 4`.
+
+::: examplebox
+**Example**
+
+```{bash, eval=FALSE}
+#!/bin/bash
+~/week_8/output/strelka2/runWorkflow.py -m local -j 4
+```
+:::
+
+::: exercisebox
+**Exercise 5:**
+
+-   Create and run a bash script to execute Strelka2.
+
+-   **Note**: Strelka2 will take \~10-15 minutes to run.In the mean time, discuss the importance of the --exome flag. There is information about what this flag does in the Strelka2 guide. Put your answer in the Padlet.
+:::
+
+### Reviewing Strelka2 outputs
+
+Lets take a look at our output. Strelka will store variants as a `vcf` file in `strelka2/results/variants`. We can use `bcftools` to examine this `vcf` file in a bit greater detail.
+
+::: exercisebox
+**Exercise 6:**
+
+-   Use `bcftools stats` to generate statistics for the vcf file. How many SNPs and Indels were called?
+-   Use the `-f PASS` flag to generate statistics from variants that passed filtering. How many variants passed the filtering step? What is the proportion of indels and SNPs that passed filtering?
+:::
+
+We can also examine the reasons why variants failed filtering. The filtering information is contained in the 7th column of the vcf.
+
+::: exercisebox
+**Exercise 7:**
+
+-   Using `zgrep`, `awk` and `sort` print out all the possible reasons that variants have been filtered.
+-   **Note:** You will need to review notes of previous workshops to work out what flags to provide to these tools.
+:::
+
+```{bash, eval = FALSE, echo=FALSE}
+How many variants? 
+`bcftools stats strelka/results/variants/variants.vcf.gz` 
+How many passed all the filters? 
+bcftools stats -f PASS strelka/results/variants/variants.vcf.gz
+Lets look at all the possible reasons that variants were filtered in our VCF 
+`zgrep -v '#' strelka/results/variants/variants.vcf.gz | awk '{print $7}' | sort --unique`
+```
+
+## Part 4 - SVs with Manta
+
+### Configuring Manta runs
+
+Like Strelka2, Manta is configured with a standalone python script. Here is an example
+
+::: examplebox
+**Example**
+
+```{bash, eval=FALSE}
+#!/bin/bash
+BAM_FILE_PATH="PATH_TO_BAM"
+REFERENCE="PATH_TO_REFERENCE"
+OUTPUT="~/week_8/output/manta/"
+
+/usr/local/manta/bin/configManta.py \
+--bam $BAM_FILE_PATH \
+--referenceFasta $REFERENCE \
+--runDir $OUTPUT \
+--exome
+--generateEvidenceBam
+```
+:::
+
+::: exercisebox
+**Exercise 8:**
+
+-   Using the template above, create a bash script in the src directory to analyse the `bam` file in data/SR_Exome. Make sure you alter the variables to point to your files.
+
+-   This will create files in your `output/manta`
+:::
+
+### Executing Manta
+
+Manta is also executed using a `runWorkflow.py` script, which will be created in the `output/manta` directory. We need to specify a few options to make sure the script runs smoothly. We do not need to specify that is it ran locally, but do need to specify how many cores we want the script to use using the `-j` option. Lets set `-j 4`.
+
+::: examplebox
+**Example**
+
+```{bash, eval=FALSE}
+#!/bin/bash
+~/week_8/output/manta/runWorkflow.py -j 4
+```
+:::
+
+::: exercisebox
+**Exercise 9:**
+
+-   Create and run a bash script to execute Manta
+:::
+
+### Reviewing Manta outputs
+
+Manta will store variants as a `vcf` file in `manta/results/variants`. Notice there are three `vcf` files in this directory. There are two candidate files and a diploid file.
+
+::: exercisebox
+**Exercise 10:**
+
+-   Using `bcftools stats`, calculate the number of variants in each `vcf` file. What do you notice?
+-   Using `zgrep`, `awk` and `sort` print out all the possible reasons that variants have been filtered. What do each of these filters mean? Research each and discuss within your group. Place your answers in the padlet.
+:::
+
+## Part 5 - Visualising SVs
+
+### Visualising SVs with JBrowse 2
+
+Structural variants can be difficult to decipher from vcf files. In this part of the workshop, we will use [JBrowse2](https://jbrowse.org/jb2/download/) to visualise our structural variants. You will need to download and install Jbrowse 2 on your laptop to visualise your variants. We will also need our vcf files and out evidence bam files.
+
+::: exercisebox
+**Exercise 11:**
+
+-   Using scp or CyberDuck, download the evidence bam and the diploidSV vcf files to your laptop.
+-   We will demonstrate how to use the JBrowse tool at the end of the workshop.
+:::
