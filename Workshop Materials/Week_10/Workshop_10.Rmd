@@ -1,5 +1,5 @@
 ---
-title: "Workshop 8 - Complex variant calling"
+title: "Workshop 10 - Quality control"
 output: 
   html_document: 
     theme: yeti
