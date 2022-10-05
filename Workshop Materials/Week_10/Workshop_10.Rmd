@@ -29,58 +29,162 @@ output:
 
 #  {.tabset}
 
-## Part 1 - Intra-Sample Contamination
+## Part 1 - Intra-patient Contamination
 
-### Intra-sample Contamination
+### Intra-patient Contamination
+
+![](https://raw.githubusercontent.com/lochlanf/GNA5012/main/Workshop%20Materials/Week_10/img/intrapatient.png)
+
+In this section of the workshop we will examine intrasample contamination (usually referred to as tumour purity in the context of cancer). Tumour purity is a very important aspect of somatic variant calling. Low tumour purity can significantly reduce variant calling sensitivity and lead to us missing clinically important variants.
+
+Understanding the purity of our tumour samples is an important consideration when interpretting the output of somatic variant calling. If you have sequenced a tumour with low purity and have relatively few variants in your filtered vcf, it is worth sequencing the library to a higher depth.
+
+### Inferring tumour purity using computational approaches
+
+There are several computational approaches to assessing tumour purity. These include methods that assess RNA, DNA methylation, and copy number profiles. One of the more popular tools for inferring tumour purity is [ASCAT (Allele Specific Copy number Analysis of Tumours)](https://github.com/VanLoo-lab/ascat)
 
 ::: exercisebox
 **Exercise 1**
 
+-   ASCAT is an R package. Start up Rstudio and create a new project called "Week 10". In the project directory, create data and results subdirectories (folders).
+
+-   Download the workshop data from Moodle, extract the .zip file within the data directory
+
+-   Open up R and create a new Rmarkdown file. This is where we will be entering our scripts. Review week 1 for instructions on how to do this if you are unsure.
+
+-   Execute the following code in the **console**. This will install ASCAT and it's dependencies.
+
+    ```{r, eval=FALSE}
+    if (!require("BiocManager", quietly = TRUE))
+        install.packages("BiocManager")
+    BiocManager::install(version = "3.15")
+    BiocManager::install(c('GenomicRanges','IRanges'))
+    install.packages("devtools")
+    devtools::install_github('VanLoo-lab/ascat/ASCAT')
+    library(ASCAT)
+    ```
+
+-   Please attract the attention of a tutor if you are not able to load the ASCAT library.
+:::
+
+There are several steps involved in somatic copy number, purity and ploidy estimation using ASCAT. These are:
+
+```{r, eval = FALSE}
+ascat.loadData()
+ascat.correctLogR()
+ascat.aspcf()
+ascat.plotSegmentedData()
+ascat.runAscat()
+ascat.metrics()
+```
+
+::: exercisebox
+**Exercise 2**
+
+-   In small groups, discuss the purposes of each step. Refer to the manuscript, user guide and other online resources to help you with this task.
+-   Respond to the prompts in the padlet
 :::
 
 ::: examplebox
 **Example**
 
+```{r, eval = FALSE}
+#if (!require("BiocManager", quietly = TRUE))
+#    install.packages("BiocManager")
+#BiocManager::install(version = "3.15")
+#BiocManager::install(c('GenomicRanges','IRanges'))
+#install.packages("devtools")
+#devtools::install_github('VanLoo-lab/ascat/ASCAT')
+
+samples <- paste0("S", sample(1:99, 10))
+files <- c("Tumor_BAF", "Germline_BAF", "Tumor_LogR", "Germline_LogR")
+for (label in files) {
+  input <- read.table(paste0("./data/ASCAT/", label, ".txt")) %>% select(chrs,pos,samples)
+  write.table(input, file = paste0("./results/", label, "_subset.txt"), sep="\t")
+}
+
+
+ascat.bc = ascat.loadData(Tumor_LogR_file = "results/Tumor_LogR_subset.txt", Tumor_BAF_file = "results/Tumor_BAF_subset.txt", Germline_LogR_file = "results/Tumor_BAF_subset.txt", Germline_BAF_file = "results/Germline_BAF_subset.txt", gender = rep('XX',10), genomeVersion = "hg19") # isTargetedSeq=T for targeted sequencing data
+ascat.bc = ascat.correctLogR(ascat.bc, GCcontentfile = "data/ASCAT/GC_example.txt", replictimingfile = "data/ASCAT/RT_example.txt")
+ascat.bc = ascat.aspcf(ascat.bc, out.dir = "results/") # penalty=25 for targeted sequencing data
+ascat.plotSegmentedData(ascat.bc, img.dir = "results/")
+ascat.output = ascat.runAscat(ascat.bc, write_segments = T, img.dir = "results/") # gamma=1 for HTS data
+QC = ascat.metrics(ascat.bc,ascat.output)
+save(ascat.bc, ascat.output, QC, file = 'ASCAT_objects.Rdata')
+```
 :::
 
-## Part 2 - Inter-sample Contamination
-
-### Inter-sample Contamination
-
-::: exercisebox
-**Exercise 1**
-
-:::
-
-::: examplebox
-**Example**
-
-:::
-
-## Part 3 - Inter-species contamination
+## Part 2 - Inter-species contamination
 
 ### Inter-species contamination
 
 ::: exercisebox
 **Exercise 1**
-
 :::
 
 ::: examplebox
 **Example**
-
 :::
 
-## Part 4 - Diagnosing issues from QC reports
+## Part 3 - Diagnosing issues from QC reports
 
 ### Diagnosing issues from QC reports
 
 ::: exercisebox
 **Exercise 1**
-
 :::
 
 ::: examplebox
 **Example**
+:::
 
+## Part 4 - DNA sequencing and analysis - Putting it all together
+
+### DNA sequencing and analysis - Putting it all together
+
+This week ends our analysis of DNA sequencing data. We have
+
+-   Performed QC on raw sequencing reads and assessed sequence quality using FastQC
+
+-   Evaluated other quality control metrics and tools
+
+-   Compared the role of different sequencing platforms in detecting variants
+
+-   Aligned and preprocessed genomes
+
+-   Called candidate germline variants using HaplotypeCaller
+
+-   Evaluated genome-wide genotyping data and genome-wide association studies
+
+-   Called small indels and structural variants using Strelka2 and Manta
+
+-   Called somatic variants using MuTect2
+
+Most samples that you interact with will be processed using similar workflows to the ones that you have been exposed to in class.
+
+::: exercisebox
+**Exercise 1**
+
+-   In groups and on the whiteboards around the room, draw workflow diagrams describing how samples from a cancer patient go from DNA extraction to variant calls
+
+-   Include the following in your diagrams:
+
+    -   What samples you will sequence
+
+    -   Quality control
+
+    -   Alignment
+
+    -   Germline variant calling
+
+    -   Somatic variant calling
+
+    -   Somatic Copy number analysis
+
+    -   Structual variant calling
+-   You should include all the tools, including their input and outputs.
+:::
+
+::: examplebox
+**Example**
 :::
