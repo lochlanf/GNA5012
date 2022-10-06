@@ -82,63 +82,109 @@ ascat.metrics()
 **Exercise 2**
 
 -   In small groups, discuss the purposes of each step. Refer to the manuscript, user guide and other online resources to help you with this task.
--   Respond to the prompts in the padlet
 :::
 
-::: examplebox
-**Example**
+### Running ASCAT
 
-```{r, eval = FALSE}
+For this workshop, we have B-Allele Frequency and Log R data from 100 breast cancer and normal DNA samples (`Germline/Tumor_BAF.txt` and `Germline/Tumor_LogR.txt`). All patients are female. These are tab delimited text files that we can load in using the `ascat.loadData` function. In exercise three, we will load and process these data using ASCAT
+
+::: exercisebox
+**Exercise 3**
+
+1.  Create a new code chunk. In the code chunk, use the `ascat.loadData` function to load the BAF and LogR files. Remember to assign them to a object using the `<-` operator.
+    -   `ascatAnalysis <- ascat.loadData(..., gender = rep('XX', 100), genomeVersion = 'hg19')`
+    -   Note, we have used the `rep` function to indicate that all samples have two X chromosomes as the patients are female. We have also set the genome version to hg19, which is the genome corresponding to the SNP positions in the file.
+2.  Using the `ascat.CorrectLogR` function, correct your newly created object. You will need to specify three arguments in this command, the object name (ie. ascatAnalysis), the GC content file `GC_example.txt`, and the replication timing file `RT_example.txt`. Make sure you overwrite your previous object.
+    -   `ascatAnalysis <- ascat.correctLogR(ascatAnalysis, GCcontentfile = '...', replictimingfile = '...')`
+3.  Next, we need to use the `ascat.aspcf` function to denoise and segment the data by identifying change-points. The results of this will be written out to file, therefore we should provide the `out.dir` argument to direct these files to our results directory.
+    -   `ascatAnalysis <- ascat.aspcf(ascatAnalysis, out.dir = "...")`
+    -   **Note:** It is normal to get warnings at this point, they can be safely ignored.
+4.  Before we run ASCAT, it is a good idea to plot our segmented data and do some sanity checks to make sure segmentation looks correct. We can use the `ascat.plotSegmentedData` function for this.
+    -   `ascat.plotSegmentedData(ascatAnalysis, img.dir = "...")`
+5.  We can now run ASCAT with the `ascat.runAscat` function. We want to retain segmental copy number data, we can do this by setting `write_segments` to `T`. Remember to use the `img.dir` argument to direct the output files to your results directory. You'll need to assign the output to a new variable.
+    -   `ascatOutput <- ascat.runAscat(ascatAnalysis, write_segments = T, img.dir = "...")`
+6.  Our final step is to collect QC metrics. Use the `ascat.metrics` function to gather these metrics
+    -   `QC <- ascat.metrics(ascatAnalysis, ascatOutput)`
+:::
+
+```{r, eval = FALSE, echo=FALSE}
 #if (!require("BiocManager", quietly = TRUE))
 #    install.packages("BiocManager")
 #BiocManager::install(version = "3.15")
 #BiocManager::install(c('GenomicRanges','IRanges'))
 #install.packages("devtools")
 #devtools::install_github('VanLoo-lab/ascat/ASCAT')
+library(ASCAT)
 
-samples <- paste0("S", sample(1:99, 10))
-files <- c("Tumor_BAF", "Germline_BAF", "Tumor_LogR", "Germline_LogR")
-for (label in files) {
-  input <- read.table(paste0("./data/ASCAT/", label, ".txt")) %>% select(chrs,pos,samples)
-  write.table(input, file = paste0("./results/", label, "_subset.txt"), sep="\t")
-}
-
-
-ascat.bc = ascat.loadData(Tumor_LogR_file = "results/Tumor_LogR_subset.txt", Tumor_BAF_file = "results/Tumor_BAF_subset.txt", Germline_LogR_file = "results/Tumor_BAF_subset.txt", Germline_BAF_file = "results/Germline_BAF_subset.txt", gender = rep('XX',10), genomeVersion = "hg19") # isTargetedSeq=T for targeted sequencing data
-ascat.bc = ascat.correctLogR(ascat.bc, GCcontentfile = "data/ASCAT/GC_example.txt", replictimingfile = "data/ASCAT/RT_example.txt")
-ascat.bc = ascat.aspcf(ascat.bc, out.dir = "results/") # penalty=25 for targeted sequencing data
-ascat.plotSegmentedData(ascat.bc, img.dir = "results/")
-ascat.output = ascat.runAscat(ascat.bc, write_segments = T, img.dir = "results/") # gamma=1 for HTS data
-QC = ascat.metrics(ascat.bc,ascat.output)
-save(ascat.bc, ascat.output, QC, file = 'ASCAT_objects.Rdata')
+ascatAnalysis <- ascat.loadData(Tumor_LogR_file = "data/ASCAT/Tumor_LogR.txt", Tumor_BAF_file = "data/ASCAT/Tumor_BAF.txt", Germline_LogR_file = "data/ASCAT/Tumor_BAF.txt", Germline_BAF_file = "data/ASCAT/Germline_BAF.txt", gender = rep('XX',100), genomeVersion = "hg19") # isTargetedSeq=T for targeted sequencing data
+ascatAnalysis <- ascat.correctLogR(ascatAnalysis, GCcontentfile = "data/ASCAT/GC_example.txt", replictimingfile = "data/ASCAT/RT_example.txt")
+ascatAnalysis <- ascat.aspcf(ascatAnalysis, out.dir = "results/")
+ascat.plotSegmentedData(ascatAnalysis, img.dir = "results/")
+ascat.output <- ascat.runAscat(ascatAnalysis, write_segments = T, img.dir = "results/")
+QC <- ascat.metrics(ascatAnalysis,ascat.output)
 ```
+
+### Reviewing ASCAT Results
+
+Let's review our ASCAT results. Note that there are files in your results file and data in the QC table. Let's review the QC table first. 
+
+::: exercisebox
+**Exercise 4**
+
+-   Using the `str` function, identify the structure of the QC object. How many rows and columns does it have?
+-   Using the `summary` function, generate summary statistics for the `purity` and `ploidy` columns. What is the average tumour purity?
+-   Using ggplot2, generate a histogram of tumour purity.
+-   Calculate the heterozygous VAF (1/2 of tumour purity) for the sample with the highest and lowest tumour purity. Cross-reference this with the image below. If we wish we have >80% SNV sensitivity in all samples, how deep should we sequence the libraries?
+![](https://raw.githubusercontent.com/lochlanf/GNA5012/main/Workshop%20Materials/Week_10/img/IlluminaVAF.png)
+-   We will review the sunrise plots as a class
 :::
+
 
 ## Part 2 - Inter-species contamination
 
 ### Inter-species contamination
 
+![](https://raw.githubusercontent.com/lochlanf/GNA5012/main/Workshop%20Materials/Week_10/img/interspecies.png)
+
+Inter-species contamination refers to contamination of your sample with nucleic acids that are derived from another organism. We can use several techniques to identify this contamination bioinformatically. We can use k-mer matching based approaches to match k-mers to large databases, or we can use mapping based approaches to map subsets of our target reads to selected reference genomes. K-mer matching based approaches are fast and unbiased, however they require an exceptionally large amount of compute resources as they load the entire database into RAM. In this part of the workshop, we will use mapping based methods to identify contamination.
+
+### Background
+
+Dr Mick Ops works a laboratory that uses three model organisms, C.elegans, C.intestinalis, D.melanogaster and the broiler chicken. You have been given a dataset from the researcher. The data is 2x75bp and was sequenced on a NextSeq500. You notice that it is mapping very poorly. You are told that the data is from broiler chickens, but have your doubts. The files are in `week_10/data`.
+
+### FastQ-Screen
+
+FastQ-Screen is a mapping based program that can identify potential contaminators in your sequencing data. It uses an aligner (bowtie, bowtie2 or BWA) to map a subset of the reads to candidate genomes and reports hits on each genome. This can be very useful when dealing with a handful of known contaminating organisms. I have configured FastQ-Screen to use four reference genomes, each if which were indexed with `bwa index`. You will find these in your `ref` directory. 
+
 ::: exercisebox
-**Exercise 1**
+**Exercise**
+
+-   Using fastq_screen, identify possible contaminants
+
+-   The syntax for this program is `fastq_screen OPTIONS forward_reads reverse_reads`, where OPTIONS refers to any custom flags and forward_reads and reverse_reads refers to the path to your sequencing reads
+
+-   There are three flags that you will need to use
+
+    -   -conf path_to_configuration_file
+
+    -   \--aligner bwa
+
+    -   \--outdir path_to_results_directory
+
+-   This will generate a text file in your output directory with mapping rates to the four model organisms
 :::
 
-::: examplebox
-**Example**
-:::
-
-## Part 3 - Diagnosing issues from QC reports
-
-### Diagnosing issues from QC reports
+### Group Discussion
 
 ::: exercisebox
-**Exercise 1**
+**Exercise**
+
+-   Based on the data from the Fastq-Screen, what organism contributes the greatest proportion of sample?
+-   Dr Mick Ops submitted his samples for library preparation in a 96 well plate. See the below plate diagram. Using your knowledge of the sampling, extraction and library preparation processes, outline where this error may have occured.
+![](https://raw.githubusercontent.com/lochlanf/GNA5012/main/Workshop%20Materials/Week_10/img/plate.png)
 :::
 
-::: examplebox
-**Example**
-:::
-
-## Part 4 - DNA sequencing and analysis - Putting it all together
+## Part 3 - DNA analysis - Putting it all together
 
 ### DNA sequencing and analysis - Putting it all together
 
@@ -182,9 +228,14 @@ Most samples that you interact with will be processed using similar workflows to
     -   Somatic Copy number analysis
 
     -   Structual variant calling
+
 -   You should include all the tools, including their input and outputs.
 :::
 
 ::: examplebox
 **Example**
+
+-   Here is an example of a flow chart that shows how I might process paired-end sequencing from raw sequencing reads to duplicate marked alignments. Your diagrams should look similar to this.
+
+![](https://raw.githubusercontent.com/lochlanf/GNA5012/main/Workshop%20Materials/Week_10/img/Example_flow.jpg)
 :::

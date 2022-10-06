@@ -189,7 +189,7 @@ OUTPUT="~/week_8/output/manta/"
 --bam $BAM_FILE_PATH \
 --referenceFasta $REFERENCE \
 --runDir $OUTPUT \
---exome
+--exome \
 --generateEvidenceBam
 ```
 :::
